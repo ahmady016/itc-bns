@@ -19,6 +19,9 @@
     "classnames": "^2.2.6",
     "materialize-css": "^1.0.0"
   },
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.7"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
