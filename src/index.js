@@ -2,9 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './views/App';
 import * as serviceWorker from './serviceWorker';
-import M from 'materialize-css';
 import addExtensions from './common/extensions';
+import M from 'materialize-css';
 import './index.css';
+
+// for firebase CRUD test only
+import './common/firebase';
 
 // AutoInit the Materialize component [which needs AutoInit]
 M.AutoInit();
