@@ -4,6 +4,7 @@ import App from './views/App';
 import * as serviceWorker from './serviceWorker';
 import addExtensions from './common/extensions';
 import M from 'materialize-css';
+import './materialize-css-rtl-1.0.0.min.css';
 import './index.css';
 
 // for firebase CRUD test only

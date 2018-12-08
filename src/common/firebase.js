@@ -142,15 +142,14 @@ db.settings({ timestampsInSnapshots: true });
 // Firestore CRUD helpers
 const mapDoc = docRef => {
   const obj = docRef.data();
-  obj.createdAt = new Date(obj.createdAt.toDate());
-  if (obj)
-    return {
-      id: docRef.id,
-      ...obj
-    };
+  if (obj) {
+    obj.createdAt = obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM");
+    obj.id = docRef.id;
+    return obj;
+  }
   return "document not found ...";
 };
-const get = path => {
+const find = path => {
   // get one doc by id
   if (path.includes("/"))
     return db.doc(path).get();
@@ -161,24 +160,36 @@ const get = path => {
     .get();
 };
 const query = path => {
-  // extract the collectionName and query from path string
-  const [collectionName, query] = path.split("?");
-  // extract each query item from the query string
-  let [type, field, operator, value] = query.split("|");
-  // convert the value string based on the given data type
-  switch (type) {
-    case "number":
-      value = parseInt(value);
-      break;
-    case "date":
-      value = new Date(value);
-      break;
-  }
-  // get query using where
-  return db
-    .collection(collectionName)
-    .where(field, operator, value)
-    .get();
+  // extract the collectionName and queryString from given path
+  const [collectionName, queryString] = path.split("?");
+  // get the query from the target conllection
+  let query = db.collection(collectionName);
+  // build the firestore query
+  queryString
+    .split('&')
+    .forEach(condition => {
+      // extract each condition items from the query string
+      let [field, operator, value, type] = condition.split("|");
+      // convert the value string based on the given data type
+      switch (type) {
+        case "int":
+          value = parseInt(value);
+          break;
+        case "float":
+          value = parseFloat(value);
+          break;
+        case "date":
+          value = new Date(value);
+          break;
+        case "bool":
+          value = Boolean(value);
+          break;
+      }
+      // build the query using where
+      query = query.where(field, operator, value);
+    })
+  // execute the firestore query
+  return query.get();
 };
 const getPage = (collectionName, pageSize, createdAfter) => {
   // get the doc(s) that created After the given date
@@ -203,7 +214,7 @@ const add = (path, obj) => {
     .collection(collectionName)
     .doc(docId)
     .set(obj)
-    .then(() => get(path));
+    .then(() => find(path));
 };
 const update = (path, obj) => {
   // update an existing doc
@@ -212,7 +223,7 @@ const update = (path, obj) => {
     .collection(collectionName)
     .doc(docId)
     .update(obj)
-    .then(() => get(path));
+    .then(() => find(path));
 };
 const remove = path => {
   // delete an existing doc
@@ -221,7 +232,7 @@ const remove = path => {
     .collection(collectionName)
     .doc(docId)
     .delete()
-    .then(() => get(path));
+    .then(() => find(path));
 };
 // CRUD test
 async function run() {
@@ -238,19 +249,52 @@ async function run() {
   // db.collection("test2")
   //   .doc("2q2XKG3EBRnwVTBwPuVu")
   //   .set({ first: "Shady", last: "Hessen", born: 1997 });
-  let docRef, querySnapshot, lastDate = dateZero;
+  let docRef,
+    querySnapshot,
+    lastDate = dateZero,
+    page = 1,
+    timerId,
+    categories = ["work", "social", "personal", "fun", "family","sport"],
+    _query;
+  // test the query helper function
+  // querySnapshot = await query("todos?category|==|family&completed|==|true|bool");
+  // if (querySnapshot.size === 0)
+  //   console.log("doc(s) not found ...");
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
+  // update doc(s) to set category field
+  // querySnapshot = await find("todos");
+  // querySnapshot.forEach(async todoRef => {
+  //   docRef = await update(`todos/${todoRef.id}`,{ category: categories.random() });
+  //   console.log("Document updated: ", mapDoc(docRef) );
+  // });
+  // apply multiple where [logical And]
+  // _query = db.collection("todos");
+  // _query = query.where("completed", "==", true);
+  // _query = query.where("category", "==", "sport");
+  // querySnapshot = await _query.get();
+  // if (querySnapshot.size === 0)
+  //   console.log("doc(s) not found ...");
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
   // get first page data by starting after [dateZero]
-  // setInterval( async () => {
+  // timerId = setInterval( async () => {
+  //   // get the page data
   //   querySnapshot = await getPage("todos",5,lastDate);
-  //   lastDate = querySnapshot.docs[querySnapshot.size-1].data().createdAt.toDate().toString();
-  //   if (querySnapshot.size === 0)
-  //     console.log("doc(s) not found ...");
-  //   console.info("page docs start: =====================");  
+  //   // if there is no page data then cancel timer and return
+  //   if (querySnapshot.size === 0) {
+  //     clearInterval(timerId);
+  //     return console.log("no more pages ...");
+  //   }
+  //   // get the lastDate from the last doc
+  //   lastDate = querySnapshot.docs[querySnapshot.size-1].data().createdAt;
+  //   // log the page doc(s)
+  //   console.info(`"page ${page} start: ====================="`);
   //   querySnapshot.forEach( docRef => console.log(mapDoc(docRef)));
-  //   console.info("page docs end: =======================");
-  // },10000);
+  //   console.info(`"page ${page} end: ======================="`);
+  //   page++;
+  // },3000);
   // get all orderd by created date
-  // querySnapshot = await get("todos");
+  // querySnapshot = await find("todos");
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
   // add the seed todos
   // todos.forEach(async todo => {
   //   docRef = await add("todos",todo);
@@ -264,12 +308,12 @@ async function run() {
   // })
   // console.log("Document added: ",mapDoc(docRef) );
   // get an existing doc
-  // docRef = await get("test/2q2XKG3EBRnwVTBwPuVu")
+  // docRef = await find("test/2q2XKG3EBRnwVTBwPuVu")
   // console.log("Document: ",mapDoc(docRef));
   // query
   // querySnapshot = await db.collection("test").where("born","==",1992).get();
   // query
-  // querySnapshot = await query("test?number|born|==|1992");
+  // querySnapshot = await query("test?born|==|1992|int");
   // if (querySnapshot.size === 0)
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
@@ -280,7 +324,7 @@ async function run() {
   // })
   // console.log("Document added: ",mapDoc(docRef) );
   // get a non existing doc
-  // docRef = await get("test/2q2XKG3EBRnwVTBwIoOI")
+  // docRef = await find("test/2q2XKG3EBRnwVTBwIoOI")
   // console.log("Document: ",mapDoc(docRef));
   // update a doc
   // docRef = await update("test2/BA1PEZH2eB19MhpuqKtu", {

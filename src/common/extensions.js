@@ -55,38 +55,6 @@ export default () => {
     }
     return _result;
   };
-  // return full datetime string
-  Date.prototype.toString = function(format = "dd/mm/yyyy 00:00:00 AM") {
-    let separator = "/",
-      day,
-      month;
-    switch (format) {
-      case "dd/mm/yyyy 00:00:00 AM":
-        let parts = this.toLocaleString()
-          .split(",")
-          .join("")
-          .split("/");
-        day = (+parts[1] > 9 ? "" : "0") + parts[1];
-        month = (+parts[0] > 9 ? "" : "0") + parts[0];
-        return [day, month, parts[2]].join("/");
-      case "dd-mm-yyyy":
-        separator = "-";
-      case "dd/mm/yyyy":
-        day = this.getDate();
-        day = (day > 9 ? "" : "0") + day;
-        month = this.getMonth() + 1;
-        month = (month > 9 ? "" : "0") + month;
-        return [day, month, this.getFullYear()].join(separator);
-      case "yyyy-mm-dd":
-        separator = "-";
-      case "yyyy/mm/dd":
-        day = this.getDate();
-        day = (day > 9 ? "" : "0") + day;
-        month = this.getMonth() + 1;
-        month = (month > 9 ? "" : "0") + month;
-        return [this.getFullYear(), month, day].join(separator);
-    }
-  };
   // return the duration from now till that date in [years days hours minutes seconds] format
   Date.prototype.duration = function(format = "d") {
     // each time unit relavant to seconds used to do units calc
@@ -193,6 +161,44 @@ export default () => {
     const period = this.toLocaleTimeString().slice(-2);
     return `${hours}:${minutes}:${seconds}.${milliseconds} ${period}`;
   }
+  // return full datetime string
+  Date.prototype.toString = function(format = "dd/mm/yyyy 00:00:00 AM") {
+    let separator = "/",
+      day,
+      month,
+      parts;
+    switch (format) {
+      case "dd/mm/yyyy 00:00:00 AM":
+        parts = this.toLocaleString()
+          .split(",")
+          .join("")
+          .split("/");
+        day = (+parts[1] > 9 ? "" : "0") + parts[1];
+        month = (+parts[0] > 9 ? "" : "0") + parts[0];
+        return [day, month, parts[2]].join("/");
+      case "dd/mm/yyyy 00:00:00.000 AM":
+        parts = this.toLocaleDateString().split("/");
+        day = (+parts[1] > 9 ? "" : "0") + parts[1];
+        month = (+parts[0] > 9 ? "" : "0") + parts[0];
+        return `${[day, month, parts[2]].join("/")} ${this.getFullTime()}`;
+      case "dd-mm-yyyy":
+        separator = "-";
+      case "dd/mm/yyyy":
+        day = this.getDate();
+        day = (day > 9 ? "" : "0") + day;
+        month = this.getMonth() + 1;
+        month = (month > 9 ? "" : "0") + month;
+        return [day, month, this.getFullYear()].join(separator);
+      case "yyyy-mm-dd":
+        separator = "-";
+      case "yyyy/mm/dd":
+        day = this.getDate();
+        day = (day > 9 ? "" : "0") + day;
+        month = this.getMonth() + 1;
+        month = (month > 9 ? "" : "0") + month;
+        return [this.getFullYear(), month, day].join(separator);
+    }
+  };
   // randomize sort an array
   Array.prototype.randomize = function(count) {
     if (this.length <= 1) return this;
