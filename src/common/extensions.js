@@ -146,21 +146,29 @@ export default () => {
   }
   // get time with milliseconds
   Date.prototype.getFullTime = function() {
-    let hours = this.getHours();
+    // get [AM | PM]
+    const period = this.toLocaleTimeString().slice(-2);
+    // get the time variables
+    let hours = this.getHours(),
+        minutes = this.getMinutes(),
+        seconds = this.getSeconds(),
+        milliseconds = this.getMilliseconds();
+    // adjust the hours
+    hours = (hours > 12)? hours-12 : hours;
     hours = (hours < 10)? '0'+hours : hours;
-    let minutes = this.getMinutes();
+    // adjust the minutes
     minutes = (minutes < 10)? '0'+minutes : minutes;
-    let seconds = this.getSeconds();
+    // adjust the seconds
     seconds = (seconds < 10)? '0'+seconds : seconds;
-    let milliseconds = this.getMilliseconds();
+    // adjust the milliseconds
     milliseconds = (milliseconds < 10)
                       ? '00'+milliseconds
                       : (milliseconds < 100)
                         ? '0'+milliseconds
                         : milliseconds;
-    const period = this.toLocaleTimeString().slice(-2);
+    // return the full time string
     return `${hours}:${minutes}:${seconds}.${milliseconds} ${period}`;
-  }
+  };
   // return full datetime string
   Date.prototype.toString = function(format = "dd/mm/yyyy 00:00:00 AM") {
     let separator = "/",

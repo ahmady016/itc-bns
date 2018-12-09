@@ -125,6 +125,8 @@ const todos = [
 ];
 // the JS begining date
 const dateZero = new Date(0).toString();
+// the collection(s) count
+const counters = {};
 // the config object from the firebase server
 const config = {
   apiKey: "AIzaSyDchx090iMsAOwd39dciy3XpPNbhTQ_oOk",
@@ -143,7 +145,7 @@ db.settings({ timestampsInSnapshots: true });
 const mapDoc = docRef => {
   const obj = docRef.data();
   if (obj) {
-    obj.createdAt = obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM");
+    obj.createdAt = (obj.createdAt)? obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM") : null;
     obj.id = docRef.id;
     return obj;
   }
@@ -201,13 +203,14 @@ const getPage = (collectionName, pageSize, createdAfter) => {
     .get();
 };
 const add = (path, obj) => {
+  // add the createdAt field
   obj.createdAt = firebase.firestore.FieldValue.serverTimestamp();
   // add new doc with auto generated id
   if (!path.includes("/"))
     return db
       .collection(path)
       .add(obj)
-      .then(docRef => docRef.get());
+      // .then(docRef => docRef.get());
   // add new doc with a given id
   const [collectionName, docId] = path.split("/");
   return db
@@ -234,6 +237,39 @@ const remove = path => {
     .delete()
     .then(() => find(path));
 };
+const listen = (path) => {
+  // listen on changed of one doc
+  if(path.includes('/'))
+    return db
+      .doc(path)
+      .onSnapshot(docRef => console.log(mapDoc(docRef)) );
+  // listen on changed of all docs
+  let _message;
+  return db
+    .collection(path)
+    .onSnapshot( snapshot => {
+      const docs = snapshot.docChanges();
+      counters[path] = counters[path] ? counters[path] : 0;
+      docs.forEach( change => {
+        switch(change.type) {
+          case "added":
+            _message = "Added doc: ";
+            counters[path] += 1;
+            break;
+          case "modified":
+            _message = "Modified doc: ";
+            break;
+          case "removed":
+            _message = "Removed doc: ";
+            break;
+        }
+        console.log(_message, mapDoc(change.doc) );
+      });
+      console.log("​----------------------------");
+      console.log("​listen -> counters", counters);
+      console.log("​----------------------------");
+    });
+};
 // CRUD test
 async function run() {
   // raw firestore test
@@ -255,7 +291,51 @@ async function run() {
     page = 1,
     timerId,
     categories = ["work", "social", "personal", "fun", "family","sport"],
-    _query;
+    _query,
+    _message;
+  // test change listeners
+  listen("todos");
+  // setTimeout(() => add("todos",{
+  //   title: "play music ...",
+  //   completed: false,
+  //   category: "fun"
+  // }), 5000);
+  // listen("todos/wWap85jw9hOshZQwnNO7");
+  // db.doc("todos/wWap85jw9hOshZQwnNO7")
+  //   .onSnapshot(docRef => console.log(mapDoc(docRef)) );
+  // setTimeout( async () => {
+  //   update("todos/wWap85jw9hOshZQwnNO7", { completed: true });
+  // },5000);
+  // docRef = await find("todos/wWap85jw9hOshZQwnNO7");
+  // console.log(mapDoc(docRef));
+  // querySnapshot = await query("todos?title|==|do the needed work just in case ...");
+  // if (querySnapshot.size === 0)
+  //   console.log("doc(s) not found ...");
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
+  // querySnapshot.forEach( docRef =>  remove(`todos/${docRef.id}`) );
+  // manually set listners
+  // db.collection("todos")
+  //   .onSnapshot( snapshot => {
+  //     snapshot.docChanges().forEach( change => {
+  //       switch(change.type) {
+  //         case "added":
+  //           _message = "Added doc: ";
+  //           break;
+  //         case "modified":
+  //           _message = "Modified doc: ";
+  //           break;
+  //         case "removed":
+  //           _message = "Removed doc: ";
+  //           break;
+  //       }
+  //       console.log(_message, mapDoc(change.doc) );
+  //     });
+  //   });
+  // setTimeout(() => add("todos",{
+  //   title: "go to the needed workspace ...",
+  //   completed: false,
+  //   category: "work"
+  // }), 5000);
   // test the query helper function
   // querySnapshot = await query("todos?category|==|family&completed|==|true|bool");
   // if (querySnapshot.size === 0)
