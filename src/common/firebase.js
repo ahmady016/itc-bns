@@ -238,18 +238,18 @@ const remove = path => {
     .then(() => find(path));
 };
 const listen = (path) => {
-  // listen on changed of one doc
+  // listen on change of the given doc
   if(path.includes('/'))
     return db
       .doc(path)
       .onSnapshot(docRef => console.log(mapDoc(docRef)) );
-  // listen on changed of all docs
+  // listen on change of all docs of the given collection
   let _message;
   return db
     .collection(path)
     .onSnapshot( snapshot => {
-      const docs = snapshot.docChanges();
       counters[path] = counters[path] ? counters[path] : 0;
+      const docs = snapshot.docChanges();
       docs.forEach( change => {
         switch(change.type) {
           case "added":
@@ -294,7 +294,7 @@ async function run() {
     _query,
     _message;
   // test change listeners
-  listen("todos");
+  // listen("todos");
   // setTimeout(() => add("todos",{
   //   title: "play music ...",
   //   completed: false,
