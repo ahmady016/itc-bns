@@ -21,21 +21,13 @@ db.settings({ timestampsInSnapshots: true });
 export const mapDoc = docRef => {
   const obj = docRef.data();
   if (obj) {
-    obj.createdAt = (obj.createdAt)? obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM") : null;
+    obj.createdAt = (obj.createdAt)
+            ? obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM")
+            : null;
     obj.id = docRef.id;
     return obj;
   }
-  return "document not found ...";
-};
-export const find = path => {
-  // get one doc by id
-  if (path.includes("/"))
-    return db.doc(path).get();
-  // get all docs ordered by its created date descending
-  return db
-    .collection(path)
-    .orderBy("createdAt", "desc")
-    .get();
+  return "doc not found ...";
 };
 export const query = path => {
   // extract the collectionName and queryString from given path
@@ -66,8 +58,8 @@ export const query = path => {
       // build the query using where
       query = query.where(field, operator, value);
     })
-  // execute the firestore query
-  return query.get();
+  // return firestore query
+  return query;
 };
 export const getPage = (collectionName, pageSize, createdAfter) => {
   // get the doc(s) that created After the given date
@@ -77,6 +69,16 @@ export const getPage = (collectionName, pageSize, createdAfter) => {
     .startAfter(createdAfter)
     .limit(pageSize)
     .get();
+};
+export const find = path => {
+  // get one doc by id
+  if (path.includes("/"))
+    return db.doc(path);
+  // get the filtered doc(s) based on queryString
+  else if (path.includes("?"))
+    return query(path);
+  // get all docs ordered by its created date descending
+  return db.collection(path).orderBy("createdAt", "desc");
 };
 export const add = (path, obj) => {
   // add the createdAt field

@@ -1,8 +1,7 @@
 import {
   mapDoc,
-  find,
-  query,
   getPage,
+  find,
   add,
   update,
   remove,
@@ -159,7 +158,7 @@ async function run() {
     _query,
     _message;
   // test change listeners
-  listen("todos");
+  // listen("todos");
   // setTimeout(() => add("todos",{
   //   title: "play music ...",
   //   completed: false,
@@ -201,11 +200,42 @@ async function run() {
   //   completed: false,
   //   category: "work"
   // }), 5000);
-  // test the query helper function
-  // querySnapshot = await query("todos?category|==|family&completed|==|true|bool");
+  // get all orderd by created date
+  // querySnapshot = await find("todos").get();
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
+  // get an existing doc
+  // docRef = await find("todos/p6rRbuuk2stSQZ8xVaDZ").get();
+  // console.log("Document: ",mapDoc(docRef));
+  // test find to do query
+  // querySnapshot = await find("todos?category|==|family&completed|==|true|bool").get();
   // if (querySnapshot.size === 0)
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
+  // listen on find (one doc)
+  // find("todos/p6rRbuuk2stSQZ8xVaDZ")
+  //   .onSnapshot(docRef => console.log(mapDoc(docRef)) );
+  // listen on find (query)
+  // find("todos?category|==|family&completed|==|true|bool")
+  //   .onSnapshot(snapshot => {
+  //     snapshot.docChanges().forEach( change => {
+  //       switch(change.type) {
+  //         case "added":
+  //           _message = "Added doc: ";
+  //           break;
+  //         case "modified":
+  //           _message = "Modified doc: ";
+  //           break;
+  //         case "removed":
+  //           _message = "Removed doc: ";
+  //           break;
+  //       }
+  //       console.log(_message, mapDoc(change.doc) );
+  //     });
+  //   });
+  // update one doc from the last query to test realtime updates
+  // setTimeout(() => update("todos/fGgbjPybAT6OhUhwVo2W",{
+  //   title: "how about my mother ..."
+  // }), 5000);
   // update doc(s) to set category field
   // querySnapshot = await find("todos");
   // querySnapshot.forEach(async todoRef => {
@@ -237,9 +267,6 @@ async function run() {
   //   console.info(`"page ${page} end: ======================="`);
   //   page++;
   // },3000);
-  // get all orderd by created date
-  // querySnapshot = await find("todos");
-  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
   // add the seed todos
   // todos.forEach(async todo => {
   //   docRef = await add("todos",todo);
@@ -252,9 +279,6 @@ async function run() {
   //   born: 1998
   // })
   // console.log("Document added: ",mapDoc(docRef) );
-  // get an existing doc
-  // docRef = await find("test/2q2XKG3EBRnwVTBwPuVu")
-  // console.log("Document: ",mapDoc(docRef));
   // query
   // querySnapshot = await db.collection("test").where("born","==",1992).get();
   // query
