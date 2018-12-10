@@ -8,7 +8,7 @@ import './materialize-css-rtl-1.0.0.min.css';
 import './index.css';
 
 // for firebase CRUD test only
-import './common/firebase';
+import './firestoreTest';
 
 // AutoInit the Materialize component [which needs AutoInit]
 M.AutoInit();
