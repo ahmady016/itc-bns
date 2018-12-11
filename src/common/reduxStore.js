@@ -5,12 +5,12 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 // ReduxForm
 import { reducer as formReducer } from 'redux-form'
 // Redux Middlewares
-import { middlewares } from './redux/middlewares'
+import middlewares from '../redux/middlewares'
 
 // #region import All Redux Reducers
 // import all store reducers dynamically from './store' dir
 const importAll = (r) => r.keys().map(r);
-const allModules = importAll(require.context('./store', false, /\.js$/));
+const allModules = importAll(require.context('../redux', false, /\.js$/));
 const allReducers = allModules
       .filter(_module => _module.middlewares === undefined)
       .reduce( (reducers, _module) => {
@@ -29,5 +29,7 @@ const middleware = applyMiddleware(...middlewares);
 // define enhancers
 const enhancers = composeWithDevTools(middleware);
 // create the Redux Store
-export const store = createStore(rootReducer, enhancers);
+const store = createStore(rootReducer, enhancers);
+// export the store
+export default store;
 // #endregion
