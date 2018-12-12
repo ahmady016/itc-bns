@@ -5,18 +5,24 @@ import logo from './logo.svg'
 
 class Admin extends Component {
   componentDidMount() {
-    dbActions.setLisenters([{
-      key: "todo",
-      // path: "todos"
-      // path: "todos?category|==|family&completed|==|true|bool"
-      path: "todos/p6rRbuuk2stSQZ8xVaDZ"
-    }]);
+    dbActions.mountListeners([
+      {
+        key: "todo",
+        path: "todos/p6rRbuuk2stSQZ8xVaDZ"
+      },
+      {
+        key: "completedFamilyTodos",
+        path: "todos?category|==|family&completed|==|true|bool"
+      }
+    ]);
+    setTimeout(dbActions.clearListeners, 5000);
+  }
+  componentWillUnmount() {
+    console.log("componentWillUnmount");
+    // remove all realtime updates listeners
+    dbActions.clearListeners();
   }
   render() {
-    const { loading, error, todos } = this.props;
-		console.log("​-------------------------------")
-		console.log("​Admin -> render -> todos", todos)
-		console.log("​-------------------------------")
     return (
       <div className="App">
         <header className="App-header">

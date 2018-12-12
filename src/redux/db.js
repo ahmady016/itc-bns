@@ -4,17 +4,15 @@ import store from '../common/reduxStore';
 const stateKey = 'db'
 // initial state
 const initialState = {
-  loading: false,
-  error: '',
-  lisenters: []
+  meta: {},
+  listeners: []
 }
 // action types
 const actionTypes = {
-  SET_lISENTERS: "SET_lISENTERS",
-  ADD_lISENTERS: "ADD_lISENTERS",
-  REMOVE_LISENTERS: "REMOVE_LISENTERS",
-  SET_LOADING: "SET_LOADING",
-  SET_ERROR: "SET_ERROR",
+  MOUNT_LISTENERS: "MOUNT_LISTENERS",
+  ADD_LISTENER: "ADD_LISTENER",
+  CLEAR_LISTENERS: "CLEAR_LISTENERS",
+  SET_META: "SET_META",
   SET_ITEM: "SET_ITEM",
   ADD_ITEM: "ADD_ITEM",
   UPDATE_ITEM: "UPDATE_ITEM",
@@ -22,21 +20,23 @@ const actionTypes = {
 }
 // state updaters
 const updater = {
-  [actionTypes.ADD_lISENTERS]: (state,payload) => ({
+  [actionTypes.ADD_LISTENER]: (state,payload) => ({
     ...state,
-    lisenters: [ ...state.lisenters ,payload]
+    listeners: [ ...state.listeners ,payload]
   }),
-  [actionTypes.REMOVE_LISENTERS]: (state,payload) => ({
+  [actionTypes.CLEAR_LISTENERS]: (state) => ({
     ...state,
-    lisenters: state.lisenters.filter(item => item != payload )
+    listeners: []
   }),
-  [actionTypes.SET_LOADING]: (state,payload) => ({
+  [actionTypes.SET_META]: (state,payload) => ({
     ...state,
-    loading: payload
-  }),
-  [actionTypes.SET_ERROR]: (state,payload) => ({
-    ...state,
-    error: payload
+    meta: {
+      ...state.meta,
+      [payload.key]: {
+        loading: payload.loading,
+        error: payload.error
+      }
+    }
   }),
   [actionTypes.SET_ITEM]: (state,payload) => ({
     ...state,
@@ -61,33 +61,27 @@ const updater = {
 }
 // action dispatchers
 const dbActions = {
-  setLisenters: (payload) => {
+  mountListeners: (payload) => {
     store.dispatch({
-      type: actionTypes.SET_lISENTERS,
+      type: actionTypes.MOUNT_LISTENERS,
       payload
     })
   },
-  addLisenters: (payload) => {
+  addListener: (payload) => {
     store.dispatch({
-      type: actionTypes.ADD_lISENTERS,
+      type: actionTypes.ADD_LISTENER,
       payload
     })
   },
-  removeLisenters: (payload) => {
-    store.dispatch({
-      type: actionTypes.REMOVE_LISENTERS,
-      payload
-    })
+  clearListeners: () => {
+    // call each unListen function in the listeners array
+    store.getState().db.listeners.forEach(listener => listener());
+    // empty the listeners array
+    store.dispatch({ type: actionTypes.CLEAR_LISTENERS });
   },
-  setLoading: (payload) => {
+  setMeta: (payload) => {
     store.dispatch({
-      type: actionTypes.SET_LOADING,
-      payload
-    })
-  },
-  setError: (payload) => {
-    store.dispatch({
-      type: actionTypes.SET_ERROR,
+      type: actionTypes.SET_META,
       payload
     })
   },
