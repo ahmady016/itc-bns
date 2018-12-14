@@ -5,6 +5,7 @@ import logo from './logo.svg'
 
 class Admin extends Component {
   componentDidMount() {
+    // add all realtime updates listeners
     dbActions.mountListeners([
       {
         key: "todo",
@@ -15,6 +16,7 @@ class Admin extends Component {
         path: "todos?category|==|family&completed|==|true|bool"
       }
     ]);
+    // remove all realtime updates listeners
     setTimeout(dbActions.clearListeners, 5000);
   }
   componentWillUnmount() {

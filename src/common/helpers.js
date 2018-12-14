@@ -1,5 +1,14 @@
 import M from "materialize-css";
 
+// pick sub object based on given key(s) from an object
+export const pick = (obj, fields) => {
+  if(!obj)
+    return null;
+  return fields.split(',').reduce( (picked,key) => {
+    picked[key] = obj[key];
+    return picked
+  },{});
+}
 // initailize a datepicker [one element] with the given options
 export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => {
   const picker = document.querySelector(".datepicker");

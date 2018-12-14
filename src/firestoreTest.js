@@ -5,7 +5,13 @@ import {
   add,
   update,
   remove,
-  listen
+  listen,
+  signIn,
+  signUp,
+  onAuthChanged,
+  getCurrentUser,
+  register,
+  sendForgetPasswordMail
 } from "./common/firebase";
 // seed data
 const todos = [
@@ -156,7 +162,43 @@ async function run() {
     timerId,
     categories = ["work", "social", "personal", "fun", "family","sport"],
     _query,
-    _message;
+    _message,
+    _currentUser;
+  // test auth
+  // // create new user with email and password
+  // await signUp("ahmady09@gmail.com","335592ah");
+  // // get the current created user
+  // _currentUser = getCurrentUser();
+  // // set addtional info [displayName - photoURL]
+  // await _currentUser.updateProfile({
+  //   displayName: "Ahmad Hamdy",
+  //   photoURL: "https://example.com/jane-q-user/profile.jpg"
+  // });
+  // // send email verification
+  // await _currentUser.sendEmailVerification();
+  // // log the current user
+  // console.log(_currentUser);
+  // test singing in
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // _currentUser = getCurrentUser();
+  // _currentUser.updatePhoneNumber("01143680055");
+  // console.log(_currentUser);
+  // onAuthChanged(console.log);
+  // test register user
+  // _currentUser = await register({
+  //   email: "ahmady09@gmail.com",
+  //   password: "335592ah",
+  //   displayName: "Ahmad Hamdy",
+  //   photoURL: "https://example.com/jane-q-user/profile.jpg"
+  // });
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // _currentUser = getCurrentUser();
+  // console.log("​---------------------------------")
+  // console.log("​run -> _currentUser", _currentUser)
+  // console.log("​---------------------------------")
+  // test forget password
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // sendForgetPasswordMail();
   // test change listeners
   // listen("todos");
   // setTimeout(() => add("todos",{

@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from 'firebase';
+import { pick } from '../common/helpers';
 
 // the collection(s) count
 const counters = {};
@@ -16,7 +17,23 @@ firebase.initializeApp(config);
 // get the firestore db with some needed settings
 const db = firebase.firestore();
 db.settings({ timestampsInSnapshots: true });
+// get the firbase Auth
+const auth = firebase.auth();
 
+// Firebase Authentication
+export const getCurrentUser = () => pick(firebase.auth().currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
+export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
+export const signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
+export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
+export const sendVerificationMail = async () => await getCurrentUser().sendEmailVerification();
+export const sendForgetPasswordMail = async () => await auth.sendPasswordResetEmail(getCurrentUser().email);
+export const updateProfile = async (displayName,photoURL) => await getCurrentUser().updateProfile({displayName,photoURL});
+export const register = async ({email, password, displayName, photoURL}) => {
+  await signUp(email,password);
+  await updateProfile(displayName,photoURL);
+  await sendVerificationMail();
+  return getCurrentUser();
+};
 // Firestore CRUD helpers
 export const mapDoc = docRef => {
   const obj = docRef.data();
