@@ -21,13 +21,19 @@ db.settings({ timestampsInSnapshots: true });
 const auth = firebase.auth();
 
 // Firebase Authentication
-export const getCurrentUser = () => pick(firebase.auth().currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
+export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
 export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 export const signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
 export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
-export const sendVerificationMail = async () => await getCurrentUser().sendEmailVerification();
+export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
+export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
+export const changePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
 export const sendForgetPasswordMail = async () => await auth.sendPasswordResetEmail(getCurrentUser().email);
-export const updateProfile = async (displayName,photoURL) => await getCurrentUser().updateProfile({displayName,photoURL});
+export const reAuthenticate = async (password) => {
+  const _user = auth.currentUser;
+  const credentials = firebase.auth.EmailAuthProvider.credential(_user.email, password);
+  return await _user.reauthenticateAndRetrieveDataWithCredential(credentials);
+};
 export const register = async ({email, password, displayName, photoURL}) => {
   await signUp(email,password);
   await updateProfile(displayName,photoURL);

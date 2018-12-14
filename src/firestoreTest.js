@@ -11,7 +11,9 @@ import {
   onAuthChanged,
   getCurrentUser,
   register,
-  sendForgetPasswordMail
+  sendForgetPasswordMail,
+  reAuthenticate,
+  changePassword
 } from "./common/firebase";
 // seed data
 const todos = [
@@ -164,7 +166,7 @@ async function run() {
     _query,
     _message,
     _currentUser;
-  // test auth
+  // #region test auth
   // // create new user with email and password
   // await signUp("ahmady09@gmail.com","335592ah");
   // // get the current created user
@@ -178,13 +180,17 @@ async function run() {
   // await _currentUser.sendEmailVerification();
   // // log the current user
   // console.log(_currentUser);
-  // test singing in
+  // #endregion
+
+  // #region test singing in
   // await signIn("ahmady09@gmail.com","335592ah");
   // _currentUser = getCurrentUser();
   // _currentUser.updatePhoneNumber("01143680055");
   // console.log(_currentUser);
   // onAuthChanged(console.log);
-  // test register user
+  // #endregion
+
+  // #region test register user
   // _currentUser = await register({
   //   email: "ahmady09@gmail.com",
   //   password: "335592ah",
@@ -196,10 +202,28 @@ async function run() {
   // console.log("​---------------------------------")
   // console.log("​run -> _currentUser", _currentUser)
   // console.log("​---------------------------------")
-  // test forget password
+  // #endregion
+
+  // #region test forget password
   // await signIn("ahmady09@gmail.com","335592ah");
   // sendForgetPasswordMail();
-  // test change listeners
+  // #endregion
+
+  // #region test reAuthenticate a user
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // console.log(await reAuthenticate("335592ah"));
+  // #endregion
+
+  // #region test change password
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // await changePassword("335592ah");
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // await signIn("ahmady09@gmail.com","123456ah");
+  // await changePassword("335592ah");
+  // await signIn("ahmady09@gmail.com","335592ah");
+  // #endregion
+
+  // #region test change listeners
   // listen("todos");
   // setTimeout(() => add("todos",{
   //   title: "play music ...",
@@ -219,7 +243,9 @@ async function run() {
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
   // querySnapshot.forEach( docRef =>  remove(`todos/${docRef.id}`) );
-  // manually set listners
+  // #endregion
+
+  // #region manually set listners
   // db.collection("todos")
   //   .onSnapshot( snapshot => {
   //     snapshot.docChanges().forEach( change => {
@@ -242,21 +268,30 @@ async function run() {
   //   completed: false,
   //   category: "work"
   // }), 5000);
-  // get all orderd by created date
+  // #endregion
+
+  // #region get all orderd by created date
   // querySnapshot = await find("todos").get();
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
-  // get an existing doc
+  // #endregion
+  // #region get an existing doc
   // docRef = await find("todos/p6rRbuuk2stSQZ8xVaDZ").get();
   // console.log("Document: ",mapDoc(docRef));
-  // test find to do query
+  // #endregion
+
+  // #region test find to do query
   // querySnapshot = await find("todos?category|==|family&completed|==|true|bool").get();
   // if (querySnapshot.size === 0)
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
-  // listen on find (one doc)
+  // #endregion
+
+  // #region listen on find (one doc)
   // find("todos/p6rRbuuk2stSQZ8xVaDZ")
   //   .onSnapshot(docRef => console.log(mapDoc(docRef)) );
-  // listen on find (query)
+  // #endregion
+
+  // #region listen on find (query)
   // find("todos?category|==|family&completed|==|true|bool")
   //   .onSnapshot(snapshot => {
   //     snapshot.docChanges().forEach( change => {
@@ -274,17 +309,23 @@ async function run() {
   //       console.log(_message, mapDoc(change.doc) );
   //     });
   //   });
-  // update one doc from the last query to test realtime updates
+  // #endregion
+
+  // #region update one doc from the last query to test realtime updates
   // setTimeout(() => update("todos/fGgbjPybAT6OhUhwVo2W",{
   //   title: "how about my mother ..."
   // }), 5000);
-  // update doc(s) to set category field
+  // #endregion
+
+  // #region update doc(s) to set category field
   // querySnapshot = await find("todos");
   // querySnapshot.forEach(async todoRef => {
   //   docRef = await update(`todos/${todoRef.id}`,{ category: categories.random() });
   //   console.log("Document updated: ", mapDoc(docRef) );
   // });
-  // apply multiple where [logical And]
+  // #endregion
+
+  // #region apply multiple where [logical And]
   // _query = db.collection("todos");
   // _query = query.where("completed", "==", true);
   // _query = query.where("category", "==", "sport");
@@ -292,7 +333,9 @@ async function run() {
   // if (querySnapshot.size === 0)
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
-  // get first page data by starting after [dateZero]
+  // #endregion
+
+  // #region get first page data by starting after [dateZero]
   // timerId = setInterval( async () => {
   //   // get the page data
   //   querySnapshot = await getPage("todos",5,lastDate);
@@ -309,42 +352,56 @@ async function run() {
   //   console.info(`"page ${page} end: ======================="`);
   //   page++;
   // },3000);
-  // add the seed todos
+  // #endregion
+  // #region add the seed todos
   // todos.forEach(async todo => {
   //   docRef = await add("todos",todo);
   //   console.log("Document added: ", mapDoc(docRef) );
   // });
-  // add a new doc with auto generated id
+  // #endregion
+
+  // #region add a new doc with auto generated id
   // docRef = await add("test",{
   //   first: "Ramy",
   //   last: "Mohamed",
   //   born: 1998
   // })
   // console.log("Document added: ",mapDoc(docRef) );
-  // query
+  // #endregion
+
+  // #region query
   // querySnapshot = await db.collection("test").where("born","==",1992).get();
-  // query
   // querySnapshot = await query("test?born|==|1992|int");
   // if (querySnapshot.size === 0)
   //   console.log("doc(s) not found ...");
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
-  // add a new doc with a given id
+  // #endregion
+
+  // #region add a new doc with a given id
   // docRef = await add("test2/BA1PEZH2eB19MhpuqKtu",{
   //   city: "Alex",
   //   email: "alex@ae.com"
   // })
   // console.log("Document added: ",mapDoc(docRef) );
-  // get a non existing doc
+  // #endregion
+
+  // #region get a non existing doc
   // docRef = await find("test/2q2XKG3EBRnwVTBwIoOI")
   // console.log("Document: ",mapDoc(docRef));
-  // update a doc
+  // #endregion
+
+  // #region update a doc
   // docRef = await update("test2/BA1PEZH2eB19MhpuqKtu", {
   //   city: "Benisuef",
   //   address: "this is the address ..."
   // })
   // console.log("Document: ",mapDoc(docRef));
-  // delete a doc
+  // #endregion
+
+  // #region delete a doc
   // docRef = await remove("test2/BA1PEZH2eB19MhpuqKtu");
   // console.log("Document: ",mapDoc(docRef));
+  // #endregion
+
 }
 run();
