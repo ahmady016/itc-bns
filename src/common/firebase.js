@@ -21,10 +21,10 @@ db.settings({ timestampsInSnapshots: true });
 const auth = firebase.auth();
 
 // Firebase Authentication
-export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
 export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 export const signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
 export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
+export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
 export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
 export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
 export const changePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
@@ -38,6 +38,10 @@ export const register = async ({email, password, displayName, photoURL}) => {
   await signUp(email,password);
   await updateProfile(displayName,photoURL);
   await sendVerificationMail();
+  return getCurrentUser();
+};
+export const login = async (email, password) => {
+  await signIn(email, password);
   return getCurrentUser();
 };
 // Firestore CRUD helpers

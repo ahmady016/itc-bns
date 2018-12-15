@@ -1,3 +1,4 @@
+import LS from "./common/localStorage";
 import {
   mapDoc,
   getPage,
@@ -13,8 +14,10 @@ import {
   register,
   sendForgetPasswordMail,
   reAuthenticate,
-  changePassword
+  changePassword,
+  login
 } from "./common/firebase";
+
 // seed data
 const todos = [
   {
@@ -144,19 +147,6 @@ const todos = [
 const dateZero = new Date(0).toString();
 // CRUD test
 async function run() {
-  // raw firestore test
-  // db.collection("test").add({
-  //   first: "Ali",
-  //   last: "Sayed",
-  //   born: 1994
-  // })
-  // .then(docRef => {
-  //   docRef.get().then(docRef => console.log("Document added: ",{ id: docRef.id, ...docRef.data()} ))
-  // })
-  // .catch(error => console.error("Error adding document: ", error));
-  // db.collection("test2")
-  //   .doc("2q2XKG3EBRnwVTBwPuVu")
-  //   .set({ first: "Shady", last: "Hessen", born: 1997 });
   let docRef,
     querySnapshot,
     lastDate = dateZero,
@@ -166,20 +156,54 @@ async function run() {
     _query,
     _message,
     _currentUser;
+
   // #region test auth
-  // // create new user with email and password
+  // create new user with email and password
   // await signUp("ahmady09@gmail.com","335592ah");
-  // // get the current created user
+  // get the current created user
   // _currentUser = getCurrentUser();
-  // // set addtional info [displayName - photoURL]
+  // set addtional info [displayName - photoURL]
   // await _currentUser.updateProfile({
   //   displayName: "Ahmad Hamdy",
   //   photoURL: "https://example.com/jane-q-user/profile.jpg"
   // });
-  // // send email verification
+  // send email verification
   // await _currentUser.sendEmailVerification();
-  // // log the current user
+  // log the current user
   // console.log(_currentUser);
+  // #endregion
+
+  // #region test localStrorage
+  // _currentUser = JSON.parse(localStorage.getItem("login"));
+  // console.log("​---------------------------------")
+  // console.log("​run -> _currentUser", _currentUser)
+  // console.log("​---------------------------------")
+  // if(!_currentUser) {
+  //   _currentUser = await login("ahmady09@gmail.com","335592ah");
+  //   localStorage.setItem("login",JSON.stringify(_currentUser));
+  //   console.log("​---------------------------------")
+  //   console.log("​run -> _currentUser", _currentUser)
+  //   console.log("​---------------------------------")
+  // }
+  // localStorage.removeItem("login");
+  // #endregion
+
+  // #region test LS
+  // _currentUser = LS.get("login");
+  // console.log("​---------------------------------")
+  // console.log("​run -> _currentUser", _currentUser)
+  // console.log("​---------------------------------")
+  // if(!_currentUser) {
+  //   _currentUser = await login("ahmady09@gmail.com","335592ah");
+  //   LS.set("login",_currentUser);
+  //   console.log("​---------------------------------")
+  //   console.log("​run -> _currentUser", _currentUser)
+  //   console.log("​---------------------------------")
+  // }
+  // LS.remove("login");
+  // test LS with string value
+  // LS.set("test","sdf");
+  // console.log(LS.get("test"));
   // #endregion
 
   // #region test singing in
@@ -274,6 +298,7 @@ async function run() {
   // querySnapshot = await find("todos").get();
   // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
   // #endregion
+
   // #region get an existing doc
   // docRef = await find("todos/p6rRbuuk2stSQZ8xVaDZ").get();
   // console.log("Document: ",mapDoc(docRef));
@@ -337,27 +362,41 @@ async function run() {
 
   // #region get first page data by starting after [dateZero]
   // timerId = setInterval( async () => {
-  //   // get the page data
+  //   get the page data
   //   querySnapshot = await getPage("todos",5,lastDate);
-  //   // if there is no page data then cancel timer and return
+  //   if there is no page data then cancel timer and return
   //   if (querySnapshot.size === 0) {
   //     clearInterval(timerId);
   //     return console.log("no more pages ...");
   //   }
-  //   // get the lastDate from the last doc
+  //   get the lastDate from the last doc
   //   lastDate = querySnapshot.docs[querySnapshot.size-1].data().createdAt;
-  //   // log the page doc(s)
+  //   log the page doc(s)
   //   console.info(`"page ${page} start: ====================="`);
   //   querySnapshot.forEach( docRef => console.log(mapDoc(docRef)));
   //   console.info(`"page ${page} end: ======================="`);
   //   page++;
   // },3000);
   // #endregion
+
   // #region add the seed todos
   // todos.forEach(async todo => {
   //   docRef = await add("todos",todo);
   //   console.log("Document added: ", mapDoc(docRef) );
   // });
+  // #endregion
+
+  // #region query
+  // querySnapshot = await db.collection("test").where("born","==",1992).get();
+  // querySnapshot = await query("test?born|==|1992|int");
+  // if (querySnapshot.size === 0)
+  //   console.log("doc(s) not found ...");
+  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
+  // #endregion
+
+  // #region get a non existing doc
+  // docRef = await find("test/2q2XKG3EBRnwVTBwIoOI")
+  // console.log("Document: ",mapDoc(docRef));
   // #endregion
 
   // #region add a new doc with auto generated id
@@ -369,25 +408,12 @@ async function run() {
   // console.log("Document added: ",mapDoc(docRef) );
   // #endregion
 
-  // #region query
-  // querySnapshot = await db.collection("test").where("born","==",1992).get();
-  // querySnapshot = await query("test?born|==|1992|int");
-  // if (querySnapshot.size === 0)
-  //   console.log("doc(s) not found ...");
-  // querySnapshot.forEach( docRef => console.log(mapDoc(docRef)) );
-  // #endregion
-
   // #region add a new doc with a given id
   // docRef = await add("test2/BA1PEZH2eB19MhpuqKtu",{
   //   city: "Alex",
   //   email: "alex@ae.com"
   // })
   // console.log("Document added: ",mapDoc(docRef) );
-  // #endregion
-
-  // #region get a non existing doc
-  // docRef = await find("test/2q2XKG3EBRnwVTBwIoOI")
-  // console.log("Document: ",mapDoc(docRef));
   // #endregion
 
   // #region update a doc
@@ -403,5 +429,19 @@ async function run() {
   // console.log("Document: ",mapDoc(docRef));
   // #endregion
 
+  // #region raw firestore test
+  // db.collection("test").add({
+  //   first: "Ali",
+  //   last: "Sayed",
+  //   born: 1994
+  // })
+  // .then(docRef => {
+  //   docRef.get().then(docRef => console.log("Document added: ",{ id: docRef.id, ...docRef.data()} ))
+  // })
+  // .catch(error => console.error("Error adding document: ", error));
+  // db.collection("test2")
+  //   .doc("2q2XKG3EBRnwVTBwPuVu")
+  //   .set({ first: "Shady", last: "Hessen", born: 1997 });
+  // #endregion
 }
 run();
