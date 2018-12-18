@@ -384,7 +384,42 @@ async function run() {
     _cities = ["بني سويف", "الواسطي", "ناصر", "اهناسيا", "ببا","سمسطا", "الفشن"],
     _accountStatuses = ["انتظار","ممكن","معطل","مغلق"],
     _accountRoles = ["متدرب","مدرب","موظف"],
-    _userTypes = ["متدرب","مدرب","موظف"];
+    _userTypes = ["متدرب","مدرب","موظف"],
+    _evalItems = [
+      "المادة العلمية",
+      "التدريبات العملية",
+      "المساعدات السمعية والبصرية",
+      "الزمن المخصص للبرنامج",
+      "قدرة المدرب علي الشرح",
+      "قدرة المدرب علي إدارة البرنامج",
+      "تشجيع المدرب علي مشاركة المتدرب",
+      "رد المدرب علي الأسئلة",
+      "مدي الاستفادة من البرنامج"  
+    ],
+    _locationTypes = [
+      "ريف",
+      "حضر"
+    ],
+    _qualificationTypes = [
+      "متوسط",
+      "فوق المتوسط",
+      "عالي"
+    ],
+    _studentClasses = [
+      "طالب",
+      "خريج",
+      "يعمل"
+    ],
+    _genders = [
+      "ذكر",
+      "انثي"
+    ],
+    _maritalStatuses = [
+      "أعزب",
+      "متزوج",
+      "مطلق",
+      "أرمل"
+    ];
 
   // #region add villages collection docs
   // villages.forEach( (village,i) => add(`villages/${i+1}`,village) );
@@ -395,6 +430,12 @@ async function run() {
   // add("lookup/accountStatuses", { value: _accountStatuses });
   // add("lookup/accountRoles", { value: _accountRoles });
   // add("lookup/userTypes", { value: _userTypes });
+  // add("lookup/evaluationItems", { value: _evalItems });
+  // add("lookup/genders", { value: _genders });
+  // add("lookup/studentClasses", { value: _studentClasses });
+  // add("lookup/qualificationTypes", { value: _qualificationTypes });
+  // add("lookup/locationTypes", { value: _locationTypes });
+  // add("lookup/maritalStatuses", { value: _maritalStatuses });
   // #endregion
 
   // #region test auth
