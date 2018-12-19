@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import store from '../common/reduxStore';
-import Public from './Public';
-import Admin from './Admin';
+import Public from './public/Public';
+import Admin from './admin/Admin';
 import './app.css';
 
 export default () => {

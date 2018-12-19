@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { dbActions } from '../redux/db'
-import logo from './logo.svg'
+import { dbActions } from './../../redux/db'
+import logo from '../logo.svg'
 
 class Admin extends Component {
   componentDidMount() {
@@ -29,7 +29,7 @@ class Admin extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>This is the admin ...</p>
+          <p>This is the admin pages ...</p>
         </header>
       </div>
     );
