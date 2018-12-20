@@ -27,7 +27,7 @@ export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
 export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
 export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
 export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
-export const changePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
+export const updatePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
 export const sendForgetPasswordMail = async () => await auth.sendPasswordResetEmail(getCurrentUser().email);
 export const reAuthenticate = async (password) => {
   const _user = auth.currentUser;

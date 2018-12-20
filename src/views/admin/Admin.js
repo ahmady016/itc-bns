@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { dbActions } from './../../redux/db'
 import Login from './Login'
-import Register from './Register';
+import Register from './Register'
+import ChangePassword from './ChangePassword'
 import logo from '../logo.svg'
 
 class Admin extends Component {
@@ -31,8 +32,9 @@ class Admin extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
+          {/* <Register /> */}
           <Login />
-          <Register />
+          <ChangePassword />
         </header>
       </div>
     );

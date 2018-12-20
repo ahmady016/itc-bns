@@ -1,26 +1,40 @@
 import M from 'materialize-css';
 import { toast } from 'react-toastify';
-import { register, login } from './firebase';
+import { register, login, signIn, updatePassword } from './firebase';
 import LS from './localStorage';
 
+const LOGIN = "LOGGED_USER";
 // do firebase signIn and set local storage login key
 export const doLogin = async ({ email, password }) => {
   try {
     let _user = await login(email, password);
-    LS.set('login', _user);
+    LS.set(LOGIN, _user);
     toast.info("تم تسجيل الدخول بنجاح ...");
   } catch(err) {
-    toast.error(err);
+    toast.error(err.message);
   }
 }
 // do firebase signUp and set local storage login key
 export const doRegister = async ({ email, password, displayName, photoURL }) => {
   try {
     let _user = await register({ email, password, displayName, photoURL });
-    LS.set('login', _user);
+    LS.set(LOGIN, _user);
     toast.info("تم إنشاء حساب المستخدم وتسجيل الدخول بنجاح ...");
   } catch(err) {
-    toast.error(err);
+    toast.error(err.message);
+  }
+}
+// do change user password
+export const changePassword = async ({ oldPassword, newPassword }) => {
+  const _user = LS.get(LOGIN);
+  if(!_user)
+    return toast.error("يجب تسجيل الدخول أولاً");
+  try {
+    await signIn(_user.email, oldPassword);
+    await updatePassword(newPassword);
+    toast.info("تم تغيير كلمة المرور بنجاح ...");
+  } catch(err) {
+    toast.error(err.message);
   }
 }
 // pick sub object based on given key(s) from an object
