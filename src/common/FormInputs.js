@@ -1,7 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import { change, touch } from 'redux-form'
-import { store } from '../common/reduxStore'
+import store from '../common/reduxStore'
 
 // #region show validations messages
 const showError = ( { error, touched } ) => (

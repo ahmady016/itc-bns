@@ -34,7 +34,7 @@ export const reAuthenticate = async (password) => {
   const credentials = firebase.auth.EmailAuthProvider.credential(_user.email, password);
   return await _user.reauthenticateAndRetrieveDataWithCredential(credentials);
 };
-export const register = async ({email, password, displayName, photoURL}) => {
+export const register = async ({ email, password, displayName, photoURL }) => {
   await signUp(email,password);
   await updateProfile(displayName,photoURL);
   await sendVerificationMail();

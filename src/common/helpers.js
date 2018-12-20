@@ -1,5 +1,28 @@
-import M from "materialize-css";
+import M from 'materialize-css';
+import { toast } from 'react-toastify';
+import { register, login } from './firebase';
+import LS from './localStorage';
 
+// do firebase signIn and set local storage login key
+export const doLogin = async ({ email, password }) => {
+  try {
+    let _user = await login(email, password);
+    LS.set('login', _user);
+    toast.info("تم تسجيل الدخول بنجاح ...");
+  } catch(err) {
+    toast.error(err);
+  }
+}
+// do firebase signUp and set local storage login key
+export const doRegister = async ({ email, password, displayName, photoURL }) => {
+  try {
+    let _user = await register({ email, password, displayName, photoURL });
+    LS.set('login', _user);
+    toast.info("تم إنشاء حساب وتسجيل الدخول بنجاح ...");
+  } catch(err) {
+    toast.error(err);
+  }
+}
 // pick sub object based on given key(s) from an object
 export const pick = (obj, fields) => {
   if(!obj)
