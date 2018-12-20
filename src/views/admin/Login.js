@@ -1,18 +1,20 @@
 // react and redux Form
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { connect } from 'react-redux'
 // validators helpers
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
 // reusable Form Inputs
-import { renderInput, Button } from '../../common/FormInputs';
+import { renderInput, Button } from '../../common/FormInputs'
 // do Login from custom helpers
-import { doLogin } from '../../common/helpers';
+import { doLogin, forgetPassword } from '../../common/helpers'
 
 // basic react Form
 let Login = (props) => {
-  const { handleSubmit, pristine, submitting } = props;
+  const { handleSubmit, pristine, submitting, email } = props;
   const _doLogin = (values) => doLogin(values);
+  const _forgetPassword = () => forgetPassword(email);
   return (
     <form className="rtl" onSubmit={handleSubmit(_doLogin)}>
       {/* form title */}
@@ -34,6 +36,11 @@ let Login = (props) => {
                 label="تسجيل دخول"
                 disabled={pristine || submitting}
       />
+      {/* Link Button */}
+      <a class="waves-effect waves-teal btn-flat"
+        onClick={_forgetPassword} >
+        نسيت كلمة المرور ؟
+      </a>
     </form>
   );
 }
@@ -66,5 +73,11 @@ Login = reduxForm({
   validate
 })(Login);
 
+// the redux form field selector function
+const selector = formValueSelector('login');
+// map state to props
+const mapStateToProps = (state) => ({
+  "email": selector(state, "email")
+});
 // exporting the composed Form
-export default Login;
+export default connect(mapStateToProps)(Login);

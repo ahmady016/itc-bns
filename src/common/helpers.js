@@ -1,7 +1,8 @@
 import M from 'materialize-css';
 import { toast } from 'react-toastify';
-import { register, login, signIn, updatePassword } from './firebase';
+import { register, login, signIn, updatePassword, sendRestPasswordMail } from './firebase';
 import LS from './localStorage';
+import isEmail from 'validator/lib/isEmail';
 
 const LOGIN = "LOGGED_USER";
 // do firebase signIn and set local storage login key
@@ -33,6 +34,19 @@ export const changePassword = async ({ oldPassword, newPassword }) => {
     await signIn(_user.email, oldPassword);
     await updatePassword(newPassword);
     toast.info("تم تغيير كلمة المرور بنجاح ...");
+  } catch(err) {
+    toast.error(err.message);
+  }
+}
+// do send forget user password mail
+export const forgetPassword = async (email) => {
+  if (!email)
+    return toast.error("يجب ادخال البريد الالكتروني");
+  else if ( !isEmail(email) )
+    return toast.error("بريد الكتروني غير صحيح");
+  try {
+    await sendRestPasswordMail(email);
+    toast.info("تم ارسال رسالة لاعادة تعيين كلمة المرور إلي بريدك الالكتروني ...");
   } catch(err) {
     toast.error(err.message);
   }

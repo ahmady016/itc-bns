@@ -28,7 +28,7 @@ export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayNam
 export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
 export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
 export const updatePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
-export const sendForgetPasswordMail = async () => await auth.sendPasswordResetEmail(getCurrentUser().email);
+export const sendRestPasswordMail = async (email) => await auth.sendPasswordResetEmail(email);
 export const reAuthenticate = async (password) => {
   const _user = auth.currentUser;
   const credentials = firebase.auth.EmailAuthProvider.credential(_user.email, password);

@@ -12,7 +12,7 @@ import {
   onAuthChanged,
   getCurrentUser,
   register,
-  sendForgetPasswordMail,
+  sendRestPasswordMail,
   reAuthenticate,
   changePassword,
   login
@@ -511,7 +511,7 @@ async function run() {
 
   // #region test forget password
   // await signIn("ahmady09@gmail.com","335592ah");
-  // sendForgetPasswordMail();
+  // sendRestPasswordMail("ahmady09@gmail.com");
   // #endregion
 
   // #region test reAuthenticate a user
