@@ -7,17 +7,21 @@ import isLength from 'validator/lib/isLength'
 // reusable Form Inputs
 import { renderInput, Button } from '../../common/FormInputs';
 // do Login from custom helpers
-import { doLogin } from '../../common/helpers';
+import { doRegister } from '../../common/helpers';
 
 // basic react Form
-let Login = (props) => {
+let Register = (props) => {
   const { handleSubmit, pristine, submitting } = props;
-  const _doLogin = (values) => doLogin(values);
+  const _doRegister = (values) => doRegister(values);
   return (
-    <form className="rtl" onSubmit={handleSubmit(_doLogin)}>
+    <form className="rtl" onSubmit={handleSubmit(_doRegister)}>
       {/* form title */}
-      <h4 className="orange-text">تسجيل دخول</h4>
+      <h4 className="orange-text">إنشاء حساب</h4>
       <div className="divider orange" />
+      {/* displayName */}
+      <Field name="displayName"
+              label="اسم المستخدم"
+              component={renderInput} />
       {/* email */}
       <Field name="email"
               label="البريد الالكتروني"
@@ -27,17 +31,28 @@ let Login = (props) => {
               type="password"
               label="كلمة المرور"
               component={renderInput} />
+      {/* photoURL */}
+      <Field name="photoURL"
+              label="رابط الصورة الشخصية"
+              component={renderInput} />
       {/* Action Button */}
       <Button classes="primary darken-3"
                 name="login"
                 icon="send"
-                label="تسجيل دخول"
+                label="إنشاء حساب"
                 disabled={pristine || submitting}
       />
     </form>
   );
 }
 // the Form validations
+// displayName
+const validateDisplayName = (displayName, errors) => {
+  if (!displayName)
+    errors.displayName = "يجب ادخال اسم المستخدم";
+  else if ( !displayName.alpha('ar') )
+    errors.displayName = "يجب ان يحتوي اسم المستخدم علي حروف عربية فقط";
+}
 // email
 const validateEmail = (email, errors) => {
   if (!email)
@@ -52,19 +67,20 @@ const validatePassword = (password, errors) => {
   else if ( !isLength(password, { min: 8, max: 32 }) )
     errors.password = "كلمة المرور يجب الا تقل عن 8 خانات ولا تزيد عن 32 خانة";
 }
-const validate = ({ email, password }) => {
+const validate = ({ displayName, email, password }) => {
   const errors = {};
+  validateDisplayName(displayName, errors);
   validateEmail(email, errors);
   validatePassword(password, errors);
   return errors;
 }
 
 // compose reactForm with reduxForm [define the reduxForm]
-Login = reduxForm({
-  form: 'login',
+Register = reduxForm({
+  form: 'register',
   enableReinitialize: true,
   validate
-})(Login);
+})(Register);
 
 // exporting the composed Form
-export default Login;
+export default Register;

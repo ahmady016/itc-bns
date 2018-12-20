@@ -18,7 +18,7 @@ export const doRegister = async ({ email, password, displayName, photoURL }) => 
   try {
     let _user = await register({ email, password, displayName, photoURL });
     LS.set('login', _user);
-    toast.info("تم إنشاء حساب وتسجيل الدخول بنجاح ...");
+    toast.info("تم إنشاء حساب المستخدم وتسجيل الدخول بنجاح ...");
   } catch(err) {
     toast.error(err);
   }
