@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Route, Switch } from 'react-router-dom'
 import { dbActions } from '../../redux/db'
+import NavBar from './NavBar';
 import Register from '../public/Register'
 import Login from '../public/Login'
 import ChangePassword from '../admin/ChangePassword'
@@ -29,12 +31,17 @@ class Admin extends Component {
   }
   render() {
     return (
-      <div className="container">
-        {/* <RegisterUser /> */}
-        <Register />
-        {/* <Login /> */}
-        {/* <ChangePassword /> */}
-      </div>
+      <>
+        <NavBar />
+        <div className="container">
+          <Switch>
+            <Route path="/admin/change-password"  component={ChangePassword} />
+            <Route path="/admin/register-user"    component={RegisterUser} />
+            <Route path="/admin/register"         component={Register} />
+            <Route path="/admin/"                 component={Login} />
+          </Switch>
+        </div>
+      </>
     );
   }
 }

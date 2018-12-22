@@ -14,7 +14,7 @@ export default () => {
         <BrowserRouter>
           <Switch>
             <Route path="/admin" component={Admin} />
-            <Route path="/" component={Public} />
+            <Route path="/"      component={Public} />
           </Switch>
         </BrowserRouter>
       </Provider>
