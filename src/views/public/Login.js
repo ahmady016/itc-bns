@@ -37,7 +37,7 @@ let Login = (props) => {
                 disabled={pristine || submitting}
       />
       {/* Link Button */}
-      <a class="waves-effect waves-teal btn-flat"
+      <a className="waves-effect waves-teal btn-flat"
         onClick={_forgetPassword} >
         نسيت كلمة المرور ؟
       </a>

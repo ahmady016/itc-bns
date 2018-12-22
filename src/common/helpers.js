@@ -1,10 +1,26 @@
 import M from 'materialize-css';
 import { toast } from 'react-toastify';
-import { register, login, signIn, updatePassword, sendRestPasswordMail } from './firebase';
-import LS from './localStorage';
 import isEmail from 'validator/lib/isEmail';
+import LS from './localStorage';
+import {
+  register,
+  login,
+  signIn,
+  updatePassword,
+  sendRestPasswordMail,
+  add
+} from './firebase';
 
 const LOGIN = "LOGGED_USER";
+// pick sub object based on given key(s) from an object
+export const pick = (obj, fields) => {
+  if(!obj)
+    return null;
+  return fields.split(',').reduce( (picked,key) => {
+    picked[key] = obj[key];
+    return picked
+  },{});
+}
 // do firebase signIn and set local storage login key
 export const doLogin = async ({ email, password }) => {
   try {
@@ -16,10 +32,26 @@ export const doLogin = async ({ email, password }) => {
   }
 }
 // do firebase signUp and set local storage login key
-export const doRegister = async ({ email, password, displayName, photoURL }) => {
+export const doRegister = async ({ email, password, displayName, photoURL = "" }) => {
   try {
     let _user = await register({ email, password, displayName, photoURL });
     LS.set(LOGIN, _user);
+    toast.info("تم إنشاء حساب المستخدم وتسجيل الدخول بنجاح ...");
+  } catch(err) {
+    toast.error(err.message);
+  }
+}
+// do firebase signUp and and add user doc and set local storage login key
+export const registerUser = async (user) => {
+  const { email, password, displayName, photoURL = "" } = user;
+  try {
+    // register user in firebase Auth
+    let _user = await register({ email, password, displayName, photoURL });
+    // add the other fields in the users collection by user.uid [from Auth]
+    add(`users/${_user.uid}`, pick(user, 'accountStatus,accountRole,userType,nId,birthDate,address,phone,gender,maritalStatus,qualification'));
+    // set the local Storage key
+    LS.set(LOGIN, _user);
+    // display success message to the user
     toast.info("تم إنشاء حساب المستخدم وتسجيل الدخول بنجاح ...");
   } catch(err) {
     toast.error(err.message);
@@ -50,15 +82,6 @@ export const forgetPassword = async (email) => {
   } catch(err) {
     toast.error(err.message);
   }
-}
-// pick sub object based on given key(s) from an object
-export const pick = (obj, fields) => {
-  if(!obj)
-    return null;
-  return fields.split(',').reduce( (picked,key) => {
-    picked[key] = obj[key];
-    return picked
-  },{});
 }
 // initailize a datepicker [one element] with the given options
 export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => {

@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import store from '../common/reduxStore';
-import Public from './public/Public';
-import Admin from './admin/Admin';
+import Public from './layout/Public';
+import Admin from './layout/Admin';
 import './app.css';
 
 export default () => {

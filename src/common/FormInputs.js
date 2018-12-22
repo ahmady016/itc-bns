@@ -126,18 +126,23 @@ export const renderSelect = ({
   label,
   options,
   icon = "input",
+  className = "validate",
   uiState: { hidden, disabled } = {}
 }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
-    <select id={input.name} disabled={disabled} {...input}>
-      <option value="">{label || input.name}</option>
-      {options.map(opt => (
-        <option key={opt.value} value={opt.value}>{opt.text}</option>
-      ))}
-    </select>
-    <label htmlFor={input.name}>{label || input.name}</label>
-    {showError(meta)}
+    <div className={className}>
+      <select id={input.name} disabled={disabled} {...input}>
+        <option value="">{label || input.name}</option>
+        {options.map( (opt,i) => (
+          (typeof opt === 'object')
+            ? <option key={opt.value} value={opt.value}>{opt.text}</option>
+            : <option key={i+1} value={opt}>{opt}</option>
+        ))}
+      </select>
+      {/* <label htmlFor={input.name}>{label || input.name}</label> */}
+      {showError(meta)}
+    </div>
   </div>
 );
 // #endregion
@@ -194,9 +199,6 @@ export const renderCheck = ({
         ))}
       </div>
       {showError(meta)}
-      {/* <pre style={ { direction: "ltr", textAlign: "left" } }>
-        {`touched: ${meta.touched}`}
-      </pre> */}
     </div>
   );
 // #endregion
@@ -229,9 +231,6 @@ export const renderAutoComplete = ({
       {...settings}
     />
     {showError(meta)}
-    {/* <pre style={ { direction: "ltr", textAlign: "left" } }>
-        {`touched: ${meta.touched}`}
-    </pre> */}
   </div>
 );
 // #endregion

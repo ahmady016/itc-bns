@@ -1,32 +1,73 @@
-.App {
-  text-align: center;
+/* #region helper classes */
+.hidden {
+  display: none !important;
 }
+/* #endregion */
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+/* #region form error messages  */
+div.error i {
+  margin-top: 0.4rem;
 }
+div.error span {
+  text-indent: 0.5rem;
+}
+/* #endregion */
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* #region switch materialize component styles */
+.switch {
+  display: inline-block !important;
+  transform: scale(1.1);
+  padding-right: 25px;
 }
+/* #endregion */
 
-.App-link {
-  color: #61dafb;
+/* #region check-options [ radio buttons - checkboxes ] */
+div.check-options {
+  padding-top: 10px;
 }
+.rtl div.check-options > label {
+  margin-left: 30px;
+}
+/* #endregion */
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* #region matreialize autocomplete hide img */
+ul.autocomplete-content li img {
+  display: none;
 }
+/* #endregion */
+
+/* #region materialize datepicker styles [months - years] */
+body > ul.dropdown-content.select-dropdown {
+  right: 60% !important;
+  left: auto !important;
+  top: 60px !important;
+  height: 441px !important;
+  z-index: 1100 !important;
+}
+body > ul.dropdown-content.select-dropdown:last-child {
+  right: 50% !important;
+}
+/* #endregion */
+
+/* #region adjust merterialize css form styles */
+.rtl .input-field .prefix ~ .validate {
+  margin-left: inherit;
+  margin-right: 3rem;
+}
+.input-field .prefix ~ .validate {
+  margin-right: inherit;
+  margin-left: 3rem;
+}
+/* #endregion */
+
+/* #region autocompelete-select [react-select] */
+.autocompelete-select > div:first-child {
+  height: 38px;
+}
+/* #endregion */
+
+/* #region autocompelete-select [react-select] */
+.rtl td {
+  text-align: right;
+}
+/* #endregion */

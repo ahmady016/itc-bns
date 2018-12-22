@@ -115,14 +115,14 @@ export const add = (path, obj) => {
     return db
       .collection(path)
       .add(obj)
-      .then(docRef => docRef.get());
+      // .then(docRef => docRef.get());
   // add new doc with a given id
   const [collectionName, docId] = path.split("/");
   return db
     .collection(collectionName)
     .doc(docId)
     .set(obj)
-    .then(() => find(path));
+    // .then(() => find(path));
 };
 export const update = (path, obj) => {
   // update an existing doc
@@ -131,7 +131,7 @@ export const update = (path, obj) => {
     .collection(collectionName)
     .doc(docId)
     .update(obj)
-    .then(() => find(path));
+    // .then(() => find(path));
 };
 export const remove = path => {
   // delete an existing doc
@@ -140,7 +140,7 @@ export const remove = path => {
     .collection(collectionName)
     .doc(docId)
     .delete()
-    .then(() => find(path));
+    // .then(() => find(path));
 };
 export const listen = (path) => {
   // listen on change of the given doc

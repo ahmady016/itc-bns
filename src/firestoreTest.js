@@ -383,8 +383,16 @@ async function run() {
     _currentUser,
     _cities = ["بني سويف", "الواسطي", "ناصر", "اهناسيا", "ببا","سمسطا", "الفشن"],
     _accountStatuses = ["انتظار","ممكن","معطل","مغلق"],
-    _accountRoles = ["متدرب","مدرب","موظف"],
-    _userTypes = ["متدرب","مدرب","موظف"],
+    _accountRoles = {
+      "employee": "موظف",
+      "trainer": "مدرب",
+      "trainee": "متدرب"
+    },
+    _userTypes = {
+      "employee": "موظف",
+      "trainer": "مدرب",
+      "trainee": "متدرب"
+    },
     _evalItems = [
       "المادة العلمية",
       "التدريبات العملية",
