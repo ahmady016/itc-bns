@@ -1,6 +1,8 @@
-import M from 'materialize-css';
+import React from 'react'
+import { Redirect } from "react-router-dom";
 import { toast } from 'react-toastify';
 import isEmail from 'validator/lib/isEmail';
+import M from 'materialize-css';
 import LS from './localStorage';
 import {
   register,
@@ -20,6 +22,16 @@ export const pick = (obj, fields) => {
     picked[key] = obj[key];
     return picked
   },{});
+}
+// isAuth or not
+export const isAuth = () => LS.get(LOGIN) ? true : false;
+// route guard
+export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath, rootAuthPath, props }) => {
+  if (!isAuth() && isAuthRoute)
+    return <Redirect to={loginPath} />;
+  if (isAuth() && !isAuthRoute)
+    return <Redirect to={rootAuthPath} />;
+  return <Component {...props} />;
 }
 // do firebase signIn and set local storage login key
 export const doLogin = async ({ email, password }) => {

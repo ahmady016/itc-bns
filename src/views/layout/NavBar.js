@@ -13,8 +13,8 @@ export default function NavBar({ links }) {
       <div className="nav-wrapper">
         <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
         <ul className="left hide-on-med-and-down">
-          {links.map(link => (
-            <li className={setActiveNav(link.path)}>
+          {links.map( (link,i) => (
+            <li key={i+1} className={setActiveNav(link.path)}>
               <NavLink to={link.path}>{link.text}</NavLink>
             </li>
           ))}
