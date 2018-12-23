@@ -33,6 +33,8 @@ export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath,
     return <Redirect to={rootAuthPath} />;
   return <Component {...props} />;
 }
+// logout by remove the login key from local storage
+export const logout = () => LS.remove(LOGIN);
 // do firebase signIn and set local storage login key
 export const doLogin = async ({ email, password }) => {
   try {

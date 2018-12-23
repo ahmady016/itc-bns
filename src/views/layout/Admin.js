@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { routeGuard } from '../../common/helpers';
 import NavBar from "./NavBar";
-import Register from "../public/Register";
 import Login from "../public/Login";
-import ChangePassword from "../admin/ChangePassword";
+import Register from "../public/Register";
 import RegisterUser from "../public/RegisterUser";
 import Dashboard from "../admin/Dashboard";
+import ChangePassword from "../admin/ChangePassword";
+// import Logout from "../admin/Logout";
 
 class Admin extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ class Admin extends Component {
       { path: `${url}/register-user`, text: "تسجيل حساب مستخدم", component: RegisterUser, auth: false },
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
+      // { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
       { path: `${url}/change-password`, text: "تعديل كلمة المرور", component: ChangePassword, auth: true },
       { path: `${url}/dashboard`, text: "لوحة التحكم", component: Dashboard, auth: true },
     ];
@@ -44,8 +46,8 @@ class Admin extends Component {
     routes.push(<Redirect to={this.defaultPath} />)
     return (
       <>
-        <NavBar links={this.routes} />
-        <div className="container">
+        <NavBar className="rtl" links={this.routes} />
+        <div className="container rtl">
           <Switch>{routes}</Switch>
         </div>
       </>

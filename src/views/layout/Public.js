@@ -1,11 +1,7 @@
-import React, { Component } from 'react'
-import logo from "../logo.svg";
+import React from 'react'
 
 export default () => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>This is the public pages ...</p>
-    </header>
+  <div className="container rtl">
+    <h3>الصفحة الرئيسية ...</h3>
   </div>
 );
