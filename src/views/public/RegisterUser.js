@@ -24,13 +24,13 @@ const formName = 'register';
 class RegisterForm extends Component {
   // do the user registeration
   doRegisterUser = async (values) => {
-    const { match, userTypes, history } = this.props;
+    const { match: { params }, userTypes, history } = this.props;
     // append the needed values
     values = {
       ...values,
       "accountStatus": "انتظار",
-      "accountRole": userTypes.value["employee"],
-      "userType": userTypes.value["employee"]
+      "accountRole": userTypes.value[params.userType],
+      "userType": userTypes.value[params.userType]
     }
     // do register the user
     await registerUser(values);

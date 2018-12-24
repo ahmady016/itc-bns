@@ -22,7 +22,7 @@ class Admin extends Component {
     this.LoginPath = `${url}/login`;
     // the Nav Links [Path - text - component]
     this.routes = [
-      { path: `${url}/register-user`, text: "تسجيل حساب مستخدم", component: RegisterUser, auth: false },
+      { path: `${url}/register-user`, paramKeys: "/:userType", paramValues: "/employee", text: "تسجيل حساب مستخدم", component: RegisterUser, auth: false },
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
       { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
@@ -34,7 +34,7 @@ class Admin extends Component {
     let routes = this.routes.map((route, i) => (
       <Route
         key={i + 1}
-        path={route.path}
+        path={route.path+(route.paramKeys || '')}
         render={ props => routeGuard({
           component: route.component,
           auth: route.auth,

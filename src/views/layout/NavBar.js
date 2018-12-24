@@ -31,7 +31,7 @@ export default function NavBar({ links, className, history }) {
         <ul className="left hide-on-med-and-down">
           {links.map((link, i) => (
             <li key={i + 1} className={setActiveNav(currentURL, link.path)}>
-              <NavLink to={link.path}>{link.text}</NavLink>
+              <NavLink to={link.path+(link.paramValues|| '')}>{link.text}</NavLink>
             </li>
           ))}
           { isAuth()
