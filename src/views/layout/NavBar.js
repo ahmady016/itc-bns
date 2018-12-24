@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { logout, isAuth } from '../../common/helpers'
+import { logout, isAuth, getLoggedUser, initSidenav } from '../../common/helpers'
 
 // hold the current url
 let currentURL = '';
@@ -14,32 +14,79 @@ const doLogout = (history) => async () => {
   await logout();
   history.push('/admin');
 }
-export default function NavBar({ links, className, history }) {
-  // get the current URL
-  currentURL = window.location.href;
-  // get the last route segment from the current URL
-  currentURL = currentURL.slice(currentURL.lastIndexOf('/')+1);
-  // remove the not needed route(s)
-  links = links.filter(link => (isAuth() && link.auth) || (!isAuth() && !link.auth) );
-  return (
-    <nav className={className}>
-      <div className="nav-wrapper">
-        <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
-        <Link to="/" className="brand-logo right">
-          مركز تدريب علوم الحاسب
-        </Link>
-        <ul className="left hide-on-med-and-down">
-          {links.map((link, i) => (
-            <li key={i + 1} className={setActiveNav(currentURL, link.path)}>
-              <NavLink to={link.path+(link.paramValues|| '')}>{link.text}</NavLink>
-            </li>
-          ))}
-          { isAuth()
-            ? <li><a className="waves-effect waves-teal btn-flat" onClick={doLogout(history)}> تسجيل خروج</a></li>
-            : null
-          }
-        </ul>
-      </div>
-    </nav>
-  );
+// render pc-nav and/or mobile nav
+const renderNav = (navLinks, id, className) => (
+  <ul id={id} className={className}>
+    {navLinks.map((link, i) => (
+      <li key={i + 1} className={setActiveNav(currentURL, link.path)}>
+        <NavLink to={link.path+(link.paramValues|| '')}>{link.text}</NavLink>
+      </li>
+    ))}
+  </ul>
+)
+// render user-info
+const renderUserInfo = (history) => (
+  isAuth()
+  ? <div className="user-info">
+      <i className="fas fa-user-tie"></i>
+      <span>
+        {getLoggedUser().displayName}
+        <a className="waves-effect" onClick={doLogout(history)}> تسجيل خروج</a>
+      </span>
+    </div>
+  : null
+)
+export default class NavBar extends Component {
+  componentDidMount() {
+    initSidenav();
+  }
+  render() {
+    let { links, className, history } = this.props;
+    // get the current URL
+    currentURL = window.location.href;
+    // get the last route segment from the current URL
+    currentURL = currentURL.slice(currentURL.lastIndexOf('/')+1);
+    // remove the not needed route(s)
+    links = links.filter(link => (isAuth() && link.auth) || (!isAuth() && !link.auth) );
+    return (
+      <>
+        <nav className={className}>
+          <div className="nav-wrapper">
+            <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
+            <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
+            <a className="sidenav-trigger left" data-target="mobile-nav">
+              <i className="material-icons">menu</i>
+            </a>
+            { renderNav(links, "pc-nav", "left hide-on-med-and-down") }
+            { renderUserInfo(history) }
+          </div>
+        </nav>
+        { renderNav(links, "mobile-nav", "sidenav") }  
+      </>
+    )
+  }
 }
+// export default function NavBar({ links, className, history }) {
+//   // get the current URL
+//   currentURL = window.location.href;
+//   // get the last route segment from the current URL
+//   currentURL = currentURL.slice(currentURL.lastIndexOf('/')+1);
+//   // remove the not needed route(s)
+//   links = links.filter(link => (isAuth() && link.auth) || (!isAuth() && !link.auth) );
+//   return (
+//     <>
+//       <nav className={className}>
+//         <div className="nav-wrapper">
+//           <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
+//           <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
+//           <a className="sidenav-trigger left" data-target="mobile-nav">
+//             <i className="material-icons">menu</i>
+//           </a>
+//           { renderNav(links, "pc-nav", "left hide-on-med-and-down") }
+//           { renderUserInfo(history) }
+//         </div>
+//       </nav>
+//       { renderNav(links, "mobile-nav", "sidenav") }  
+//     </>
+//   );
+// }

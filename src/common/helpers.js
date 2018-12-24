@@ -129,6 +129,11 @@ export const initAutoComplete = (options) => {
     M.Autocomplete.init(autoCompleteLists, options[elem.id]);
   });
 }
+// initailize a sideNav [elements] with empty options
+export const initSidenav = () => {
+  const elems = document.querySelectorAll('.sidenav');
+  M.Sidenav.init(elems, {});
+}
 // initailize a Select [elements] with empty options
 export const initSelect = () => {
   const selectLists = document.querySelectorAll('select');

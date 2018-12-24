@@ -1,3 +1,21 @@
+nav .nav-wrapper .user-info {
+  margin-right: 15rem;
+  height: 100%;
+  display: flex;
+}
+nav .nav-wrapper .user-info .fas.fa-user-tie {
+  font-size: 2rem;
+}
+nav .nav-wrapper .user-info span {
+  display: block;
+  width: 10rem;
+  height: 100%;
+  line-height: 2rem;
+  text-align: center;
+}
+nav .nav-wrapper .user-info a {
+  padding: 0.25rem 1rem;
+}
 nav .nav-wrapper img {
   display: inline-block;
   width: 3rem;
@@ -11,4 +29,7 @@ nav .nav-wrapper a.brand-logo {
   line-height: 2rem;
   font-size: 1.3rem;
   font-weight: 500;
+}
+nav a.sidenav-trigger {
+  cursor: pointer;
 }
