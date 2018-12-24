@@ -10,8 +10,8 @@ const setActiveNav = (url, path) => {
   return (url === path) ? 'active' : '';
 }
 // after logout refresh the whole app
-const doLogout = (history) => () => {
-  logout();
+const doLogout = (history) => async () => {
+  await logout();
   history.push('/admin');
 }
 export default function NavBar({ links, className, history }) {

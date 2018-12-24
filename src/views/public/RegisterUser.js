@@ -23,15 +23,19 @@ const formName = 'register';
 // #region basic react Form
 class RegisterForm extends Component {
   // do the user registeration
-  doRegisterUser = (values) => {
-    const { match, userTypes } = this.props;
+  doRegisterUser = async (values) => {
+    const { match, userTypes, history } = this.props;
+    // append the needed values
     values = {
       ...values,
       "accountStatus": "انتظار",
       "accountRole": userTypes.value["employee"],
       "userType": userTypes.value["employee"]
     }
-    registerUser(values);
+    // do register the user
+    await registerUser(values);
+    // go to the root route
+    history.push('/admin');
   }
   // hold the select options
   state = {

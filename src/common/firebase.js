@@ -23,11 +23,13 @@ const auth = firebase.auth();
 // Firebase Authentication
 export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 export const signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
+export const signOut = () => auth.signOut();
 export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
 export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
 export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
 export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
 export const updatePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
+export const updateEmail = async (newEmail) => await auth.currentUser.updateEmail(newEmail);
 export const sendRestPasswordMail = async (email) => await auth.sendPasswordResetEmail(email);
 export const reAuthenticate = async (password) => {
   const _user = auth.currentUser;
@@ -110,6 +112,8 @@ export const find = path => {
 export const add = (path, obj) => {
   // add the createdAt field
   obj.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+  // add the createdBy field
+  obj.createdBy = getCurrentUser().uid;
   // add new doc with auto generated id
   if (!path.includes("/"))
     return db
@@ -125,6 +129,10 @@ export const add = (path, obj) => {
     // .then(() => find(path));
 };
 export const update = (path, obj) => {
+  // add the createdAt field
+  obj.modifiedAt = firebase.firestore.FieldValue.serverTimestamp();
+  // add the createdBy field
+  obj.modifiedBy = getCurrentUser().uid;
   // update an existing doc
   const [collectionName, docId] = path.split("/");
   return db

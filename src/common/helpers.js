@@ -8,6 +8,7 @@ import {
   register,
   login,
   signIn,
+  signOut,
   updatePassword,
   sendRestPasswordMail,
   add
@@ -23,8 +24,15 @@ export const pick = (obj, fields) => {
     return picked
   },{});
 }
+// fixed format any date field => [toLocaleDateString('en-gb')]
+export const formatDate = (key,format = true) => (item) => ({
+  ...item,
+  [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
+});
 // isAuth or not
 export const isAuth = () => LS.get(LOGIN) ? true : false;
+// get the user from local Storage
+export const getLoggedUser = () => LS.get(LOGIN);
 // route guard
 export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath, rootAuthPath, props }) => {
   if (!isAuth() && isAuthRoute)
@@ -34,7 +42,10 @@ export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath,
   return <Component {...props} />;
 }
 // logout by remove the login key from local storage
-export const logout = () => LS.remove(LOGIN);
+export const logout = async () => {
+  await signOut();
+  LS.remove(LOGIN);
+}
 // do firebase signIn and set local storage login key
 export const doLogin = async ({ email, password }) => {
   try {
@@ -135,8 +146,3 @@ export const initTooltips = () => {
 export const closeTooltips = (instances) => {
   tooltipsIns.forEach( instance => instance.close() );
 }
-// fixed format any date field => [toLocaleDateString('en-gb')]
-export const formatDate = (key,format = true) => (item) => ({
-  ...item,
-  [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
-});
