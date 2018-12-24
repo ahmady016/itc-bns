@@ -12,9 +12,12 @@ import { doLogin, forgetPassword } from '../../common/helpers'
 
 // basic react Form
 let Login = (props) => {
-  const { handleSubmit, pristine, submitting, email } = props;
-  const _doLogin = (values) => doLogin(values);
+  const { handleSubmit, pristine, submitting, email, history } = props;
   const _forgetPassword = () => forgetPassword(email);
+  const _doLogin = async (values) => {
+    await doLogin(values);
+    history.push('/admin');
+  }
   return (
     <form className="rtl" onSubmit={handleSubmit(_doLogin)}>
       {/* form title */}

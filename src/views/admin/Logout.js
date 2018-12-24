@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { logout } from '../../common/helpers'
 
-export default function Logout() {
-  return (
-    <a className="waves-effect waves-teal btn-flat"
-      onClick={logout} >
-      تسجيل خروج
-    </a>
-  )
+export default class Logout extends Component {
+  componentDidMount() {
+    logout();
+    this.props.history.push('/admin');
+  }
+  render() {
+    return null
+  }
 }

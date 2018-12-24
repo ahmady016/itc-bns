@@ -43,10 +43,10 @@ class Admin extends Component {
           }) }
       />
     ));
-    routes.push(<Redirect to={this.defaultPath} />)
+    routes.push(<Redirect key={routes.length} to={this.defaultPath} />);
     return (
       <>
-        <NavBar className="rtl" links={this.routes} />
+        <NavBar className="rtl" links={this.routes} history={this.props.history} />
         <div className="container rtl">
           <Switch>{routes}</Switch>
         </div>

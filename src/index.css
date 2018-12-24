@@ -1,9 +1,10 @@
 /* #region imported css libraries */
 /* materialize css LTR version v1.0.0  */
 /* @import 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'; */
-/* @import 'https://raw.githubusercontent.com/MahdiMajidzadeh/materialize-rtl/master/dist/css/materialize-rtl.min.css'; */
 /* materialize css RTL version v1.0.0 @MahdiMajidzadeh */
-@import '../src/materialize-css-rtl-1.0.0.min.css';
+/* @import 'https://raw.githubusercontent.com/MahdiMajidzadeh/materialize-rtl/master/dist/css/materialize-rtl.min.css'; */
+/* @import '../src/materialize-css-rtl-1.0.0.min.css'; */
+@import 'https://gitcdn.xyz/repo/MahdiMajidzadeh/materialize-rtl/master/dist/css/materialize-rtl.min.css';
 /* fontawesome icons */
 @import 'https://use.fontawesome.com/releases/v5.5.0/css/all.css';
 /* material icons */
