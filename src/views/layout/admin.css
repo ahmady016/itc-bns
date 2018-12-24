@@ -1,0 +1,14 @@
+nav .nav-wrapper img {
+  display: inline-block;
+  width: 3rem;
+  margin-right: 1rem;
+  margin-top: 0.7rem;
+}
+nav .nav-wrapper a.brand-logo {
+  width: 8rem;
+  margin-right: 4rem;
+  text-align: center;
+  line-height: 2rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}

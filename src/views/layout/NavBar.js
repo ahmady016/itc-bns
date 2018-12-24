@@ -24,9 +24,10 @@ export default function NavBar({ links, className, history }) {
   return (
     <nav className={className}>
       <div className="nav-wrapper">
+        <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
         <Link to="/" className="brand-logo right">
           مركز تدريب علوم الحاسب
-          </Link>
+        </Link>
         <ul className="left hide-on-med-and-down">
           {links.map((link, i) => (
             <li key={i + 1} className={setActiveNav(currentURL, link.path)}>

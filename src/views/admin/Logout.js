@@ -1,12 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { logout } from '../../common/helpers'
 
-export default class Logout extends Component {
-  componentDidMount() {
-    logout();
-    this.props.history.push('/admin');
-  }
-  render() {
-    return null
-  }
+export default function Logout({ history }) {
+  logout();
+  history.push('/admin');
+  return null;
 }

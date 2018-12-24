@@ -8,7 +8,8 @@ import Register from "../public/Register";
 import RegisterUser from "../public/RegisterUser";
 import Dashboard from "../admin/Dashboard";
 import ChangePassword from "../admin/ChangePassword";
-// import Logout from "../admin/Logout";
+import Logout from "../admin/Logout";
+import './admin.css';
 
 class Admin extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class Admin extends Component {
       { path: `${url}/register-user`, text: "تسجيل حساب مستخدم", component: RegisterUser, auth: false },
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
-      // { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
+      { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
       { path: `${url}/change-password`, text: "تعديل كلمة المرور", component: ChangePassword, auth: true },
       { path: `${url}/dashboard`, text: "لوحة التحكم", component: Dashboard, auth: true },
     ];
