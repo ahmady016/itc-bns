@@ -14,7 +14,7 @@ const doLogout = (history) => async () => {
   await logout();
   history.push('/admin');
 }
-// render pc-nav and/or mobile nav
+// render pc-nav and/or mobile-nav
 const renderNav = (navLinks, id, className) => (
   <ul id={id} className={className}>
     {navLinks.map((link, i) => (
@@ -54,39 +54,15 @@ export default class NavBar extends Component {
           <div className="nav-wrapper">
             <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
             <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
-            <a className="sidenav-trigger left" data-target="mobile-nav">
-              <i className="material-icons">menu</i>
+            <a className="sidenav-trigger left hide-on-large-only" data-target="mobile-nav">
+              <i className="fas fa-bars"></i>
             </a>
             { renderNav(links, "pc-nav", "left hide-on-med-and-down") }
             { renderUserInfo(history) }
           </div>
         </nav>
-        { renderNav(links, "mobile-nav", "sidenav") }  
+        { renderNav(links, "mobile-nav", "sidenav") }
       </>
     )
   }
 }
-// export default function NavBar({ links, className, history }) {
-//   // get the current URL
-//   currentURL = window.location.href;
-//   // get the last route segment from the current URL
-//   currentURL = currentURL.slice(currentURL.lastIndexOf('/')+1);
-//   // remove the not needed route(s)
-//   links = links.filter(link => (isAuth() && link.auth) || (!isAuth() && !link.auth) );
-//   return (
-//     <>
-//       <nav className={className}>
-//         <div className="nav-wrapper">
-//           <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
-//           <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
-//           <a className="sidenav-trigger left" data-target="mobile-nav">
-//             <i className="material-icons">menu</i>
-//           </a>
-//           { renderNav(links, "pc-nav", "left hide-on-med-and-down") }
-//           { renderUserInfo(history) }
-//         </div>
-//       </nav>
-//       { renderNav(links, "mobile-nav", "sidenav") }  
-//     </>
-//   );
-// }

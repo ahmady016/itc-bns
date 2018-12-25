@@ -1,3 +1,20 @@
+/* #region app brand [title] and logo img styles */
+nav .nav-wrapper a.brand-logo {
+  width: 8rem;
+  margin-right: 4rem;
+  text-align: center;
+  line-height: 2rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+nav .nav-wrapper img {
+  display: inline-block;
+  width: 3rem;
+  margin-right: 1rem;
+  margin-top: 0.7rem;
+}
+/* #endregion */
+/* #region user-info styles */
 nav .nav-wrapper .user-info {
   margin-right: 15rem;
   height: 100%;
@@ -16,20 +33,10 @@ nav .nav-wrapper .user-info span {
 nav .nav-wrapper .user-info a {
   padding: 0.25rem 1rem;
 }
-nav .nav-wrapper img {
-  display: inline-block;
-  width: 3rem;
-  margin-right: 1rem;
-  margin-top: 0.7rem;
-}
-nav .nav-wrapper a.brand-logo {
-  width: 8rem;
-  margin-right: 4rem;
-  text-align: center;
-  line-height: 2rem;
-  font-size: 1.3rem;
-  font-weight: 500;
-}
+/* #endregion */
+/* #region sidenav [used in med and down devices] styles */
 nav a.sidenav-trigger {
   cursor: pointer;
+  margin-left: 1rem;
 }
+/* #endregion */
