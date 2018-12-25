@@ -31,6 +31,11 @@ let Register = (props) => {
               type="password"
               label="كلمة المرور"
               component={renderInput} />
+      {/* confirm password */}
+      <Field name="confirmPassword"
+              type="password"
+              label="تأكيد كلمة المرور"
+              component={renderInput} />
       {/* photoURL */}
       <Field name="photoURL"
               label="رابط الصورة الشخصية"
@@ -67,11 +72,18 @@ const validatePassword = (password, errors) => {
   else if ( !isLength(password, { min: 8, max: 32 }) )
     errors.password = "كلمة المرور يجب الا تقل عن 8 خانات ولا تزيد عن 32 خانة";
 }
-const validate = ({ displayName, email, password }) => {
+const validateConfirmPassword = (password, confirmPassword, errors) => {
+  if (!confirmPassword)
+    errors.confirmPassword = "يجب ادخال كلمة المرور";
+  else if ( password !== confirmPassword )
+    errors.confirmPassword = "تأكيد كلمة المرور غير متطابقة ...";
+}
+const validate = ({ displayName, email, password, confirmPassword }) => {
   const errors = {};
   validateDisplayName(displayName, errors);
   validateEmail(email, errors);
   validatePassword(password, errors);
+  validateConfirmPassword(password, confirmPassword,errors);
   return errors;
 }
 

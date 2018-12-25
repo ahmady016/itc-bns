@@ -5,6 +5,7 @@ import { Field, reduxForm, change } from 'redux-form'
 // validators helpers
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
+import isNumeric from 'validator/lib/isNumeric'
 // redux db [firebase] actions
 import { dbActions } from '../../redux/db'
 // reusable Form Inputs
@@ -110,6 +111,11 @@ class RegisterForm extends Component {
                 type="password"
                 label="كلمة المرور"
                 component={renderInput} />
+      {/* confirm password */}
+      <Field name="confirmPassword"
+              type="password"
+              label="تأكيد كلمة المرور"
+              component={renderInput} />                
         {/* nId */}
         <Field name="nId"
                 label="الرقم القومي"
@@ -124,7 +130,7 @@ class RegisterForm extends Component {
                 label="العنوان"
                 component={renderInput} />
         {/* phone */}
-        <Field name="phone"
+        <Field name="phoneNumber"
                 label="رقم المحمول"
                 component={renderInput} />
         {/* gender */}
@@ -176,11 +182,36 @@ const validatePassword = (password, errors) => {
   else if ( !isLength(password, { min: 8, max: 32 }) )
     errors.password = "كلمة المرور يجب الا تقل عن 8 خانات ولا تزيد عن 32 خانة";
 }
-const validate = ({ displayName, email, password }) => {
+const validateConfirmPassword = (password, confirmPassword, errors) => {
+  if (!confirmPassword)
+    errors.confirmPassword = "يجب ادخال كلمة المرور";
+  else if ( password !== confirmPassword )
+    errors.confirmPassword = "تأكيد كلمة المرور غير متطابقة ...";
+}
+const validateNId = (nId, errors) => {
+  if (!nId)
+    errors.nId = "يجب ادخال رقم البطاقة ...";
+  else if ( !isLength(nId, { min: 14, max: 14 }) )
+    errors.nId = "يجب ألا يزيد وألا يقل رقم البطاقة عن 14 رقم ...";
+  else if ( !isNumeric(nId, { no_symbols: true }) )
+    errors.nId = "يجب أن يحتوي رقم البطاقة علي أرقام فقط ...";    
+}
+const validatePhoneNumber = (phoneNumber, errors) => {
+  if (!phoneNumber)
+    errors.phoneNumber = "يجب ادخال رقم المحمول ...";
+  else if ( !isLength(phoneNumber, { min: 11, max: 11 }) )
+    errors.phoneNumber = "يجب ألا يزيد وألا يقل رقم المحمول عن 11 رقم ...";
+  else if ( !isNumeric(phoneNumber, { no_symbols: true }) )
+    errors.phoneNumber = "يجب أن يحتوي رقم المحمول علي أرقام فقط ...";    
+}
+const validate = ({ displayName, email, password, confirmPassword, nId, phoneNumber }) => {
   const errors = {};
   validateDisplayName(displayName, errors);
   validateEmail(email, errors);
   validatePassword(password, errors);
+  validateConfirmPassword(password, confirmPassword, errors);
+  validateNId(nId, errors);
+  validatePhoneNumber(phoneNumber, errors);
   return errors;
 }
 // #endregion
