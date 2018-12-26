@@ -11,6 +11,12 @@ div.error i {
 div.error span {
   text-indent: 0.5rem;
 }
+i.material-icons.required {
+  color: #f00;
+  font-size: 10px;
+  font-weight: 700;
+  margin-right: 5px;
+}
 /* #endregion */
 
 /* #region switch materialize component styles */
@@ -46,6 +52,10 @@ body > ul.dropdown-content.select-dropdown {
 }
 body > ul.dropdown-content.select-dropdown:last-child {
   right: 50% !important;
+}
+input.datepicker,
+input.datepicker ~ label {
+  cursor: pointer;
 }
 /* #endregion */
 

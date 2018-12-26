@@ -32,6 +32,7 @@ export const renderInput = ({
   meta,
   input,
   label,
+  required = false,
   onChange = null,
   type = 'text',
   icon = 'edit',
@@ -55,7 +56,10 @@ export const renderInput = ({
             onChange={onChange || input.onChange}
           />
       }
-      <label className={input.value ? "active" : ""} htmlFor={input.name}>{label}</label>
+      <label className={input.value ? "active" : ""} htmlFor={input.name}>
+        {label}
+        {(required)? <i class="material-icons required">grade</i> : null}
+      </label>
       {showError(meta)}
     </div>
   );
@@ -67,6 +71,7 @@ export const renderDatepicker = ({
   icon,
   type,
   label,
+  required = false,
   meta,
   uiState: { hidden, disabled } = {}
 }) => (
@@ -81,6 +86,7 @@ export const renderDatepicker = ({
       />
       <label className={input.value ? "active" : ""} htmlFor={input.name}>
         {label}
+        {(required)? <i class="material-icons required">grade</i> : null}
       </label>
       {showError(meta)}
     </div>
@@ -125,6 +131,8 @@ export const renderSelect = ({
   input,
   label,
   options,
+  defaultOption,
+  required = false,
   icon = "input",
   className = "validate",
   uiState: { hidden, disabled } = {}
@@ -132,8 +140,12 @@ export const renderSelect = ({
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
     <div className={className}>
+      <label className={input.value ? "active" : ""} htmlFor={input.name}>
+        {label}
+        {(required)? <i class="material-icons required">grade</i> : null}
+      </label>
       <select id={input.name} disabled={disabled} {...input}>
-        <option value="">{label || input.name}</option>
+        <option value="">{ (defaultOption)? defaultOption : ` اختر ${label} ...` }</option>
         {options.map( (opt,i) => (
           (typeof opt === 'object')
             ? <option key={opt.value} value={opt.value}>{opt.text}</option>

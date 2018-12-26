@@ -69,8 +69,7 @@ class RegisterForm extends Component {
     const currentYear = (new Date()).getFullYear();
     initDatePicker({
       format: 'dd/mm/yyyy',
-      yearRange: [currentYear-70,currentYear+30],
-      defaultDate: new Date(),
+      yearRange: [currentYear-70,currentYear-7],
       onSelect: (selectedDate) => {
         dispatch(change(formName, 'birthDate', selectedDate.toLocaleDateString('en-gb') ));
       }
@@ -82,11 +81,8 @@ class RegisterForm extends Component {
       { key: "maritalStatuses", path: "lookup/maritalStatuses" }
     ]);
   }
-  // to remove all realtime updates db listeners
   componentWillUnmount() {
-		console.log("​------------------------------------------------------------------------------")
-		console.log("​Register -> componentWillUnmount -> clearListeners")
-		console.log("​------------------------------------------------------------------------------")
+    // to remove all firebase db realtime updates listeners
     dbActions.clearListeners();
   }
   // react render
@@ -101,51 +97,62 @@ class RegisterForm extends Component {
         {/* displayName */}
         <Field name="displayName"
                 label="الاسم بالكامل"
+                required={true}
                 component={renderInput} />
         {/* email */}
         <Field name="email"
                 label="البريد الالكتروني"
+                required={true}
                 component={renderInput} />
         {/* password */}
         <Field name="password"
                 type="password"
                 label="كلمة المرور"
+                required={true}
                 component={renderInput} />
       {/* confirm password */}
       <Field name="confirmPassword"
               type="password"
               label="تأكيد كلمة المرور"
-              component={renderInput} />                
+              required={true}
+              component={renderInput} />
         {/* nId */}
         <Field name="nId"
                 label="الرقم القومي"
+                required={true}
                 component={renderInput} />
         {/* birthDate */}
         <Field name="birthDate"
                 type="datepicker"
-                label="تاريخ الميلاد"
+                label="اختر تاريخ الميلاد"
+                required={true}
                 component={renderDatepicker} />
         {/* address */}
         <Field name="address"
                 label="العنوان"
+                required={true}
                 component={renderInput} />
         {/* phone */}
         <Field name="phoneNumber"
                 label="رقم المحمول"
+                required={true}
                 component={renderInput} />
         {/* gender */}
         <Field name="gender"
                 label="النوع"
+                required={true}
                 options={genders}
                 component={renderSelect} />
         {/* maritalStatus */}
         <Field name="maritalStatus"
                 label="الحالة الاجتماعية"
+                required={true}
                 options={maritalStatuses}
                 component={renderSelect} />
         {/* qualification */}
         <Field name="qualification"
                 label="المؤهل"
+                required={true}
                 component={renderInput} />
         {/* Action Button */}
         <Button classes="primary darken-3"
@@ -161,21 +168,20 @@ class RegisterForm extends Component {
 // #endregion
 
 // #region the Form validations
-// displayName
 const validateDisplayName = (displayName, errors) => {
   if (!displayName)
     errors.displayName = "يجب ادخال اسم المستخدم";
   else if ( !displayName.alpha('ar') )
     errors.displayName = "يجب ان يحتوي اسم المستخدم علي حروف عربية فقط";
+  else if ( !isLength(displayName, { min: 10, max: 80 }) )
+    errors.displayName = "يجب الا يقل اسم المستخدم عن 10 احرف والا يزيد عن 80 حرف ...";
 }
-// email
 const validateEmail = (email, errors) => {
   if (!email)
     errors.email = "يجب ادخال البريد الالكتروني";
   else if ( !isEmail(email) )
     errors.email = "بريد الكتروني غير صحيح";
 }
-// password
 const validatePassword = (password, errors) => {
   if (!password)
     errors.password = "يجب ادخال كلمة المرور";
@@ -194,7 +200,7 @@ const validateNId = (nId, errors) => {
   else if ( !isLength(nId, { min: 14, max: 14 }) )
     errors.nId = "يجب ألا يزيد وألا يقل رقم البطاقة عن 14 رقم ...";
   else if ( !isNumeric(nId, { no_symbols: true }) )
-    errors.nId = "يجب أن يحتوي رقم البطاقة علي أرقام فقط ...";    
+    errors.nId = "يجب أن يحتوي رقم البطاقة علي أرقام فقط ...";
 }
 const validatePhoneNumber = (phoneNumber, errors) => {
   if (!phoneNumber)
@@ -202,9 +208,22 @@ const validatePhoneNumber = (phoneNumber, errors) => {
   else if ( !isLength(phoneNumber, { min: 11, max: 11 }) )
     errors.phoneNumber = "يجب ألا يزيد وألا يقل رقم المحمول عن 11 رقم ...";
   else if ( !isNumeric(phoneNumber, { no_symbols: true }) )
-    errors.phoneNumber = "يجب أن يحتوي رقم المحمول علي أرقام فقط ...";    
+    errors.phoneNumber = "يجب أن يحتوي رقم المحمول علي أرقام فقط ...";
 }
-const validate = ({ displayName, email, password, confirmPassword, nId, phoneNumber }) => {
+const validateBirthDate = (birthDate, errors) => {
+  if (!birthDate)
+    errors.birthDate = "يجب اختيار تاريخ الميلاد ...";
+}
+const validateGender = (gender, errors) => {
+  if (!gender)
+    errors.gender = "يجب اختيار النوع ...";
+}
+const validateMaritalStatus = (maritalStatus, errors) => {
+  if (!maritalStatus)
+    errors.maritalStatus = "يجب اختيار الحالة الاجتماعية ...";
+}
+const validate = (values) => {
+  const { displayName, email, password, confirmPassword, nId, phoneNumber, gender, maritalStatus, birthDate } = values;
   const errors = {};
   validateDisplayName(displayName, errors);
   validateEmail(email, errors);
@@ -212,6 +231,9 @@ const validate = ({ displayName, email, password, confirmPassword, nId, phoneNum
   validateConfirmPassword(password, confirmPassword, errors);
   validateNId(nId, errors);
   validatePhoneNumber(phoneNumber, errors);
+  validateBirthDate(birthDate, errors);
+  validateGender(gender, errors);
+  validateMaritalStatus(maritalStatus, errors);
   return errors;
 }
 // #endregion
