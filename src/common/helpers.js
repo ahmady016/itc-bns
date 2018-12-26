@@ -138,6 +138,12 @@ export const initSidenav = () => {
 export const initSelect = () => {
   const selectLists = document.querySelectorAll('select');
   M.FormSelect.init(selectLists, {});
+  // to put the selected valued if existed into the select-dropdown input
+  setTimeout(() => {
+    document.querySelectorAll('.select-dropdown.dropdown-trigger')
+            .forEach(input => input.click());
+    document.body.click();
+  }, 0);
 }
 // hold tooltips Instances
 let tooltipsIns = [];

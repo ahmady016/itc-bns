@@ -8,6 +8,7 @@ import Register from "../public/Register";
 import RegisterUser from "../public/RegisterUser";
 import Dashboard from "../admin/Dashboard";
 import ChangePassword from "../admin/ChangePassword";
+import ViewEditUser from "../admin/ViewEditUser";
 // import Logout from "../admin/Logout";
 import './admin.css';
 
@@ -26,6 +27,7 @@ class Admin extends Component {
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
       // { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
+      { path: `${url}/view-edit-user`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "تعديل بيانات مستخدم", component: ViewEditUser, auth: true },
       { path: `${url}/change-password`, text: "تعديل كلمة المرور", component: ChangePassword, auth: true },
       { path: `${url}/dashboard`, text: "لوحة التحكم", component: Dashboard, auth: true },
     ];

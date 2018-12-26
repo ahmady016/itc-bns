@@ -21,15 +21,23 @@ let ChangePassword = (props) => {
       <Field name="oldPassword"
               type="password"
               label="كلمة المرور السابقة"
+              required={true}
               component={renderInput} />
       {/* newPassword */}
       <Field name="newPassword"
               type="password"
               label="كلمة المرور الجديدة"
+              required={true}
+              component={renderInput} />
+      {/* confirm password */}
+      <Field name="confirmPassword"
+              type="password"
+              label="تأكيد كلمة المرور الجديدة"
+              required={true}
               component={renderInput} />
       {/* Action Button */}
       <Button classes="primary darken-3"
-                name="login"
+                name="changePassword"
                 icon="send"
                 label="تغيير كلمة المرور"
                 disabled={pristine || submitting}
@@ -45,10 +53,17 @@ const validatePassword = (key, password, errors) => {
   else if ( !isLength(password, { min: 8, max: 32 }) )
     errors[key] = "كلمة المرور يجب الا تقل عن 8 خانات ولا تزيد عن 32 خانة";
 }
-const validate = ({ oldPassword, newPassword }) => {
+const validateConfirmPassword = (password, confirmPassword, errors) => {
+  if (!confirmPassword)
+    errors.confirmPassword = "يجب ادخال كلمة المرور";
+  else if ( password !== confirmPassword )
+    errors.confirmPassword = "تأكيد كلمة المرور غير متطابقة ...";
+}
+const validate = ({ oldPassword, newPassword, confirmPassword }) => {
   const errors = {};
   validatePassword("oldPassword", oldPassword, errors);
   validatePassword("newPassword", newPassword, errors);
+  validateConfirmPassword(newPassword, confirmPassword, errors);
   return errors;
 }
 

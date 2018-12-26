@@ -16,28 +16,13 @@ import {
   Button
 } from '../../common/FormInputs';
 // from custom helpers
-import { registerUser, initDatePicker, initSelect } from '../../common/helpers';
+import { initDatePicker, initSelect, getLoggedUser } from '../../common/helpers';
 
 // the reduxForm name
-const formName = 'register';
+const formName = 'viewEditUser';
 
 // #region basic react Form
-class RegisterForm extends Component {
-  // do the user registeration
-  doRegisterUser = async (values) => {
-    const { match: { params }, userTypes, history } = this.props;
-    // append the needed values
-    values = {
-      ...values,
-      "accountStatus": "انتظار",
-      "accountRole": userTypes.value[params.userType],
-      "userType": userTypes.value[params.userType]
-    }
-    // do register the user
-    await registerUser(values);
-    // go to the root route
-    history.push('/admin');
-  }
+class UserForm extends Component {
   // hold the select options
   state = {
     genders: [],
@@ -53,16 +38,9 @@ class RegisterForm extends Component {
       };
     return null;
   }
-  // to reInitialize the materializecss select component after the state changes
-  componentDidUpdate(prevProps, prevState) {
-    if ( Array.isArray(prevState.genders) && prevState.genders.length !== this.state.genders.length &&
-         Array.isArray(prevState.maritalStatuses) && prevState.maritalStatuses.length !== this.state.maritalStatuses.length )
-      // init the select [dropdown]
-      initSelect();
-  }
   // to initialize the datepicker and to mount all realtime updates db listeners
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, match: { params } } = this.props;
     // init the select [dropdown]
     initSelect();
     // init Materialize datePicker
@@ -78,8 +56,16 @@ class RegisterForm extends Component {
     dbActions.mountListeners([
       { key: "userTypes",       path: "lookup/userTypes" },
       { key: "genders",         path: "lookup/genders" },
-      { key: "maritalStatuses", path: "lookup/maritalStatuses" }
+      { key: "maritalStatuses", path: "lookup/maritalStatuses" },
+      { key: "user", path: `users/${params.id}` }
     ]);
+  }
+  // to reInitialize the materializecss select component after the state changes
+  componentDidUpdate(prevProps, prevState) {
+    if ( Array.isArray(prevState.genders) && prevState.genders.length !== this.state.genders.length &&
+          Array.isArray(prevState.maritalStatuses) && prevState.maritalStatuses.length !== this.state.maritalStatuses.length )
+      // init the select [dropdown]
+      initSelect();
   }
   componentWillUnmount() {
     // to remove all firebase db realtime updates listeners
@@ -90,9 +76,9 @@ class RegisterForm extends Component {
     const { handleSubmit, pristine, submitting } = this.props;
     const { genders, maritalStatuses } = this.state;
     return (
-      <form className="rtl" onSubmit={handleSubmit(this.doRegisterUser)}>
+      <form className="rtl" onSubmit={handleSubmit(console.log)}>
         {/* form title */}
-        <h4 className="orange-text">إنشاء حساب</h4>
+        <h4 className="orange-text">عرض - تعديل بيانات مستخدم</h4>
         <div className="divider orange" />
         {/* displayName */}
         <Field name="displayName"
@@ -104,21 +90,18 @@ class RegisterForm extends Component {
                 label="البريد الالكتروني"
                 required={true}
                 component={renderInput} />
-        {/* password */}
-        <Field name="password"
-                type="password"
-                label="كلمة المرور"
-                required={true}
-                component={renderInput} />
-      {/* confirm password */}
-      <Field name="confirmPassword"
-              type="password"
-              label="تأكيد كلمة المرور"
-              required={true}
+      {/* photoURL */}
+      <Field name="photoURL"
+              label="رابط الصورة الشخصية"
               component={renderInput} />
         {/* nId */}
         <Field name="nId"
                 label="الرقم القومي"
+                required={true}
+                component={renderInput} />
+        {/* phone */}
+        <Field name="phoneNumber"
+                label="رقم المحمول"
                 required={true}
                 component={renderInput} />
         {/* birthDate */}
@@ -127,14 +110,13 @@ class RegisterForm extends Component {
                 label="اختر تاريخ الميلاد"
                 required={true}
                 component={renderDatepicker} />
+      {/* birthLocation */}
+      <Field name="birthLocation"
+              label="محل الميلاد"
+              component={renderInput} />
         {/* address */}
         <Field name="address"
                 label="العنوان"
-                required={true}
-                component={renderInput} />
-        {/* phone */}
-        <Field name="phoneNumber"
-                label="رقم المحمول"
                 required={true}
                 component={renderInput} />
         {/* gender */}
@@ -156,9 +138,9 @@ class RegisterForm extends Component {
                 component={renderInput} />
         {/* Action Button */}
         <Button classes="primary darken-3"
-                  name="registerUser"
+                  name="updateUser"
                   icon="send"
-                  label="إنشاء حساب"
+                  label="حفظ التعديل"
                   disabled={pristine || submitting}
         />
       </form>
@@ -181,18 +163,6 @@ const validateEmail = (email, errors) => {
     errors.email = "يجب ادخال البريد الالكتروني";
   else if ( !isEmail(email) )
     errors.email = "بريد الكتروني غير صحيح";
-}
-const validatePassword = (password, errors) => {
-  if (!password)
-    errors.password = "يجب ادخال كلمة المرور";
-  else if ( !isLength(password, { min: 8, max: 32 }) )
-    errors.password = "كلمة المرور يجب الا تقل عن 8 خانات ولا تزيد عن 32 خانة";
-}
-const validateConfirmPassword = (password, confirmPassword, errors) => {
-  if (!confirmPassword)
-    errors.confirmPassword = "يجب ادخال كلمة المرور";
-  else if ( password !== confirmPassword )
-    errors.confirmPassword = "تأكيد كلمة المرور غير متطابقة ...";
 }
 const validateNId = (nId, errors) => {
   if (!nId)
@@ -227,8 +197,6 @@ const validate = (values) => {
   const errors = {};
   validateDisplayName(displayName, errors);
   validateEmail(email, errors);
-  validatePassword(password, errors);
-  validateConfirmPassword(password, confirmPassword, errors);
   validateNId(nId, errors);
   validatePhoneNumber(phoneNumber, errors);
   validateBirthDate(birthDate, errors);
@@ -239,16 +207,20 @@ const validate = (values) => {
 // #endregion
 
 // compose reactForm with reduxForm [define the reduxForm]
-const RegisterReduxForm = reduxForm({
+const UserReduxForm = reduxForm({
   form: formName,
   enableReinitialize: true,
   validate
-})(RegisterForm);
+})(UserForm);
 
 // get the db values from redux state
 const mapStateToProps = (state) => ({
-  ...state.db
+  ...state.db,
+  "initialValues": {
+    ...getLoggedUser(),
+    ...state.db.user
+  }
 });
 
 // exporting the composed Form with the redux state
-export default connect(mapStateToProps)(RegisterReduxForm);
+export default connect(mapStateToProps)(UserReduxForm);

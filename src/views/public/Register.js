@@ -42,7 +42,7 @@ let Register = (props) => {
               component={renderInput} />
       {/* Action Button */}
       <Button classes="primary darken-3"
-                name="login"
+                name="register"
                 icon="send"
                 label="إنشاء حساب"
                 disabled={pristine || submitting}
