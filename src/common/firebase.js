@@ -53,6 +53,9 @@ export const mapDoc = docRef => {
     obj.createdAt = (obj.createdAt)
             ? obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM")
             : null;
+    obj.modifiedAt = (obj.modifiedAt)
+      ? obj.modifiedAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM")
+      : null;
     obj.id = docRef.id;
     return obj;
   }

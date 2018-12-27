@@ -16,7 +16,20 @@ import {
   Button
 } from '../../common/FormInputs';
 // from custom helpers
-import { initDatePicker, initSelect, getLoggedUser } from '../../common/helpers';
+import {
+  initDatePicker,
+  initSelect,
+  getLoggedUser,
+  clear,
+  resetLSUser
+} from '../../common/helpers';
+import {
+  update,
+  updateEmail,
+  updateProfile,
+  getCurrentUser,
+  onAuthChanged
+} from '../../common/firebase';
 
 // the reduxForm name
 const formName = 'viewEditUser';
@@ -26,7 +39,8 @@ class UserForm extends Component {
   // hold the select options
   state = {
     genders: [],
-    maritalStatuses: []
+    maritalStatuses: [],
+    editMode: true
   };
   // update the state [select options] from props [redux db]
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -59,88 +73,135 @@ class UserForm extends Component {
       { key: "maritalStatuses", path: "lookup/maritalStatuses" },
       { key: "user", path: `users/${params.id}` }
     ]);
+    // toggle to view mode after delay
+    // to assure that the selected value of the select list is selected
+    setTimeout(this.toggleViewEdit,3600);
   }
   // to reInitialize the materializecss select component after the state changes
   componentDidUpdate(prevProps, prevState) {
-    if ( Array.isArray(prevState.genders) && prevState.genders.length !== this.state.genders.length &&
-          Array.isArray(prevState.maritalStatuses) && prevState.maritalStatuses.length !== this.state.maritalStatuses.length )
+    if ((prevState.genders.length !== this.state.genders.length &&
+      prevState.maritalStatuses.length !== this.state.maritalStatuses.length) ||
+      prevState.editMode !== this.state.editMode
+    )
       // init the select [dropdown]
       initSelect();
+    // listen to firebase Auth Changed and reset the local storage login key
+    onAuthChanged(resetLSUser);
   }
   componentWillUnmount() {
     // to remove all firebase db realtime updates listeners
     dbActions.clearListeners();
   }
+  toggleViewEdit = () => {
+    this.setState( state => ({
+      editMode: !state.editMode
+    }));
+    // scroll smoothly to top
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }
+  updateUser = (values) => {
+    const { initialValues } = this.props;
+    const userId = values.uid;
+    if(values.email !== initialValues.email)
+      updateEmail(values.email);
+    if( values.displayName !== initialValues.displayName || values.photoURL !== initialValues.photoURL )
+      updateProfile(values.displayName,values.photoURL);
+    let keys = [ 'id','createdAt','createdBy','modifiedAt','modifiedBy', ...Object.keys(getLoggedUser())];
+    clear(values, keys );
+    update(`users/${userId}`, values);
+  }
   // react render
   render() {
     const { handleSubmit, pristine, submitting } = this.props;
-    const { genders, maritalStatuses } = this.state;
+    const { genders, maritalStatuses, editMode } = this.state;
     return (
-      <form className="rtl" onSubmit={handleSubmit(console.log)}>
+      <form className="rtl" onSubmit={handleSubmit(this.updateUser)}>
         {/* form title */}
-        <h4 className="orange-text">عرض - تعديل بيانات مستخدم</h4>
+        <h4 className="orange-text">
+          <Button classes="btn-floating primary darken-3"
+                    name="viewEdit"
+                    type="button"
+                    icon={ (editMode)? "edit": "speaker_notes"}
+                    iconClasses="right"
+                    label={ (editMode)? 'تعديل' : 'عرض'}
+                    onClick={this.toggleViewEdit}
+          />
+          {(editMode)? 'تعديل' : 'عرض'} بيانات مستخدم
+        </h4>
         <div className="divider orange" />
         {/* displayName */}
         <Field name="displayName"
                 label="الاسم بالكامل"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
         {/* email */}
         <Field name="email"
                 label="البريد الالكتروني"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
       {/* photoURL */}
       <Field name="photoURL"
               label="رابط الصورة الشخصية"
+              disabled={!editMode}
               component={renderInput} />
         {/* nId */}
         <Field name="nId"
                 label="الرقم القومي"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
         {/* phone */}
         <Field name="phoneNumber"
                 label="رقم المحمول"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
         {/* birthDate */}
         <Field name="birthDate"
                 type="datepicker"
                 label="اختر تاريخ الميلاد"
                 required={true}
+                disabled={!editMode}
                 component={renderDatepicker} />
       {/* birthLocation */}
       <Field name="birthLocation"
               label="محل الميلاد"
+              disabled={!editMode}
               component={renderInput} />
         {/* address */}
         <Field name="address"
                 label="العنوان"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
         {/* gender */}
         <Field name="gender"
                 label="النوع"
                 required={true}
+                disabled={!editMode}
                 options={genders}
                 component={renderSelect} />
         {/* maritalStatus */}
         <Field name="maritalStatus"
                 label="الحالة الاجتماعية"
                 required={true}
+                disabled={!editMode}
                 options={maritalStatuses}
                 component={renderSelect} />
         {/* qualification */}
         <Field name="qualification"
                 label="المؤهل"
                 required={true}
+                disabled={!editMode}
                 component={renderInput} />
         {/* Action Button */}
-        <Button classes="primary darken-3"
+        <Button classes="btn primary darken-3"
                   name="updateUser"
                   icon="send"
                   label="حفظ التعديل"
+                  hidden={!editMode}
                   disabled={pristine || submitting}
         />
       </form>
@@ -217,7 +278,7 @@ const UserReduxForm = reduxForm({
 const mapStateToProps = (state) => ({
   ...state.db,
   "initialValues": {
-    ...getLoggedUser(),
+    ...getCurrentUser(),
     ...state.db.user
   }
 });

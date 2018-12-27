@@ -81,3 +81,18 @@ input.datepicker ~ label {
   text-align: right;
 }
 /* #endregion */
+
+/* #region btn floating */
+.btn-floating {
+  margin-left: 1rem;
+}
+.btn-floating i {
+  margin-top: 0.1rem;
+}
+/* #endregion */
+
+/* #region other */
+.divider {
+  margin-bottom: 2rem;
+}
+/* #endregion */

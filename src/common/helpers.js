@@ -17,12 +17,22 @@ import {
 const LOGIN = "LOGGED_USER";
 // pick sub object based on given key(s) from an object
 export const pick = (obj, fields) => {
-  if(!obj)
+  if(!obj || !fields)
     return null;
-  return fields.split(',').reduce( (picked,key) => {
+  if(typeof fields === 'string')
+    fields = fields.split(',');
+  return fields.reduce((picked, key) => {
     picked[key] = obj[key];
-    return picked
-  },{});
+    return picked;
+  }, {});
+}
+// delete not needed key(s) from an object
+export const clear = (obj, fields) => {
+  if(!obj || !fields)
+    return null;
+  if(typeof fields === 'string')
+    fields = fields.split(',');
+  fields.forEach(key => delete obj[key]);
 }
 // fixed format any date field => [toLocaleDateString('en-gb')]
 export const formatDate = (key,format = true) => (item) => ({
@@ -40,6 +50,11 @@ export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath,
   if (isAuth() && !isAuthRoute)
     return <Redirect to={rootAuthPath} />;
   return <Component {...props} />;
+}
+// reset the local storage login key [used onAuthChanged]
+export const resetLSUser = (user) => {
+  user = pick(user, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
+  LS.set(LOGIN, user);
 }
 // logout by remove the login key from local storage
 export const logout = async () => {

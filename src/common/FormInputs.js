@@ -15,12 +15,19 @@ const showError = ( { error, touched } ) => (
 // #endregion
 
 // #region Action Button
-export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
-  let btnClasses = `btn waves-effect waves-light ${classes} `;
+export const Button = (props) => {
+  const { name, hidden = false, disabled = false, classes = "", icon = "send", label, type = "submit", iconClasses = "", onClick = null } = props;
+  let btnClasses = `waves-effect waves-light ${classes} `;
   if (hidden) btnClasses += "hidden";
   return (
-    <button id={name} name={name} className={btnClasses} disabled={disabled}>
-      <i className="material-icons left">{icon || "send"}</i>
+    <button id={name}
+            name={name}
+            type={type}
+            className={btnClasses}
+            onClick={onClick}
+            disabled={disabled}
+      >
+      <i className={`material-icons ${iconClasses || 'left'}`}>{icon}</i>
       {label}
     </button>
   );
@@ -36,7 +43,8 @@ export const renderInput = ({
   onChange = null,
   type = 'text',
   icon = 'edit',
-  uiState: { hidden, disabled } = {}
+  hidden = false,
+  disabled = false
 }) => (
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon}</i>
@@ -58,7 +66,7 @@ export const renderInput = ({
       }
       <label className={input.value ? "active" : ""} htmlFor={input.name}>
         {label}
-        {(required)? <i class="material-icons required">grade</i> : null}
+        {(required)? <i className="material-icons required">grade</i> : null}
       </label>
       {showError(meta)}
     </div>
@@ -73,7 +81,8 @@ export const renderDatepicker = ({
   label,
   required = false,
   meta,
-  uiState: { hidden, disabled } = {}
+  hidden = false,
+  disabled = false
 }) => (
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || "edit"}</i>
@@ -86,7 +95,7 @@ export const renderDatepicker = ({
       />
       <label className={input.value ? "active" : ""} htmlFor={input.name}>
         {label}
-        {(required)? <i class="material-icons required">grade</i> : null}
+        {(required)? <i className="material-icons required">grade</i> : null}
       </label>
       {showError(meta)}
     </div>
@@ -101,7 +110,8 @@ export const renderSwitch = ({
   label,
   on,
   off,
-  uiState: { hidden, disabled } = {}
+  hidden = false,
+  disabled = false
 }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon || "edit"}</i>
@@ -132,17 +142,18 @@ export const renderSelect = ({
   label,
   options,
   defaultOption,
-  required = false,
   icon = "input",
   className = "validate",
-  uiState: { hidden, disabled } = {}
+  required = false,
+  hidden = false,
+  disabled = false
 }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
     <div className={className}>
       <label className={input.value ? "active" : ""} htmlFor={input.name}>
         {label}
-        {(required)? <i class="material-icons required">grade</i> : null}
+        {(required)? <i className="material-icons required">grade</i> : null}
       </label>
       <select id={input.name} disabled={disabled} {...input}>
         <option value="">{ (defaultOption)? defaultOption : ` اختر ${label} ...` }</option>
@@ -172,7 +183,8 @@ export const renderCheck = ({
   itemsClassName = "",
   itemClassName = "",
   inputClassName = "",
-  uiState: { hidden, disabled } = {}
+  hidden = false,
+  disabled = false
 }) => (
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon}</i>
@@ -226,7 +238,8 @@ export const renderAutoComplete = ({
   settings = {},
   icon = "edit",
   className = "validate",
-  uiState: { hidden, disabled } = {}
+  hidden = false,
+  disabled = false
 }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
