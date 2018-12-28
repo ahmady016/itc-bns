@@ -19,17 +19,11 @@ import {
 import {
   initDatePicker,
   initSelect,
-  getLoggedUser,
-  clear,
-  resetLSUser
+  updateUser,
+  resetLSUser,
+  getLoggedUser
 } from '../../common/helpers';
-import {
-  update,
-  updateEmail,
-  updateProfile,
-  getCurrentUser,
-  onAuthChanged
-} from '../../common/firebase';
+import { getCurrentUser, onAuthChanged } from "../../common/firebase";
 
 // the reduxForm name
 const formName = 'viewEditUser';
@@ -99,23 +93,13 @@ class UserForm extends Component {
     // scroll smoothly to top
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
-  updateUser = (values) => {
-    const { initialValues } = this.props;
-    const userId = values.uid;
-    if(values.email !== initialValues.email)
-      updateEmail(values.email);
-    if( values.displayName !== initialValues.displayName || values.photoURL !== initialValues.photoURL )
-      updateProfile(values.displayName,values.photoURL);
-    let keys = [ 'id','createdAt','createdBy','modifiedAt','modifiedBy', ...Object.keys(getLoggedUser())];
-    clear(values, keys );
-    update(`users/${userId}`, values);
-  }
+  doUpdateUser = (values) => updateUser({ prevValues: this.props.initialValues, newValues: values });
   // react render
   render() {
     const { handleSubmit, pristine, submitting } = this.props;
     const { genders, maritalStatuses, editMode } = this.state;
     return (
-      <form className="rtl" onSubmit={handleSubmit(this.updateUser)}>
+      <form className="rtl" onSubmit={handleSubmit(this.doUpdateUser)}>
         {/* form title */}
         <h4 className="orange-text">
           <Button classes="btn-floating primary darken-3"

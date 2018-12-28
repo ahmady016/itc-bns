@@ -5,13 +5,17 @@ import isEmail from 'validator/lib/isEmail';
 import M from 'materialize-css';
 import LS from './localStorage';
 import {
+  USER_KEYS,
   register,
   login,
   signIn,
   signOut,
   updatePassword,
   sendRestPasswordMail,
-  add
+  add,
+  update,
+  updateEmail,
+  updateProfile
 } from './firebase';
 
 const LOGIN = "LOGGED_USER";
@@ -43,6 +47,8 @@ export const formatDate = (key,format = true) => (item) => ({
 export const isAuth = () => LS.get(LOGIN) ? true : false;
 // get the user from local Storage
 export const getLoggedUser = () => LS.get(LOGIN);
+// reset the local storage login key [used onAuthChanged]
+export const resetLSUser = (user) => LS.set(LOGIN, pick(user, USER_KEYS));
 // route guard
 export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath, rootAuthPath, props }) => {
   if (!isAuth() && isAuthRoute)
@@ -50,11 +56,6 @@ export const routeGuard = ({ component: Component, auth: isAuthRoute, loginPath,
   if (isAuth() && !isAuthRoute)
     return <Redirect to={rootAuthPath} />;
   return <Component {...props} />;
-}
-// reset the local storage login key [used onAuthChanged]
-export const resetLSUser = (user) => {
-  user = pick(user, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
-  LS.set(LOGIN, user);
 }
 // logout by remove the login key from local storage
 export const logout = async () => {
@@ -121,6 +122,27 @@ export const forgetPassword = async (email) => {
     toast.info("تم ارسال رسالة لاعادة تعيين كلمة المرور إلي بريدك الالكتروني ...");
   } catch(err) {
     toast.error(err.message);
+  }
+}
+// do update the user
+export const updateUser = async ({ prevValues, newValues }) => {
+  try {
+    // if email changed then updateEmail
+    if(newValues.email !== prevValues.email)
+      await updateEmail(newValues.email);
+    // if displayName and/or photoURL changed then updateProfile
+    if( newValues.displayName !== prevValues.displayName || newValues.photoURL !== prevValues.photoURL )
+      await updateProfile(newValues.displayName,newValues.photoURL);
+    // remove the auth, meta keys from the user newValues
+    let keys = [ 'id','createdAt','createdBy', ...USER_KEYS];
+    clear(newValues, keys );
+    // if any user value is changed then update user with its uid
+    if( Object.keys(newValues).some(key => newValues[key] != prevValues[key] ) )
+      await update(`users/${prevValues.uid}`, newValues);
+  } catch(err) {
+    toast.error(err.message);
+  } finally {
+    toast.info("تم تعديل بيانات المستخدم بنجاح ...");
   }
 }
 // initailize a datepicker [one element] with the given options

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import store from '../common/reduxStore';
 import Public from './layout/Public';
@@ -11,12 +11,12 @@ export default () => {
   return (
     <>
       <Provider store={store}>
-        <BrowserRouter>
+        <Router>
           <Switch>
             <Route path="/admin" component={Admin} />
             <Route path="/"      component={Public} />
           </Switch>
-        </BrowserRouter>
+        </Router>
       </Provider>
       <ToastContainer autoClose={5000} pauseOnFocusLoss={true} />
     </>

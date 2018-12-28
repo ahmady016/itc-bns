@@ -19,13 +19,15 @@ const db = firebase.firestore();
 db.settings({ timestampsInSnapshots: true });
 // get the firbase Auth
 const auth = firebase.auth();
+// current User needed keys
+export const USER_KEYS = ["uid","email","displayName","photoURL","emailVerified","isAnonymous"]
 
 // Firebase Authentication
 export const signUp = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 export const signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
 export const signOut = () => auth.signOut();
 export const onAuthChanged = (callback) => auth.onAuthStateChanged(callback);
-export const getCurrentUser = () => pick(auth.currentUser, "uid,email,displayName,photoURL,phoneNumber,emailVerified,isAnonymous");
+export const getCurrentUser = () => pick(auth.currentUser, USER_KEYS);
 export const sendVerificationMail = async () => await auth.currentUser.sendEmailVerification();
 export const updateProfile = async (displayName,photoURL) => await auth.currentUser.updateProfile({displayName,photoURL});
 export const updatePassword = async (newPassword) => await auth.currentUser.updatePassword(newPassword);
