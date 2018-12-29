@@ -52,16 +52,14 @@ export const login = async (email, password) => {
 export const mapDoc = docRef => {
   const obj = docRef.data();
   if (obj) {
-    obj.createdAt = (obj.createdAt)
-            ? obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM")
-            : null;
-    obj.modifiedAt = (obj.modifiedAt)
-      ? obj.modifiedAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM")
-      : null;
+    if (obj.createdAt)
+      obj.createdAt = obj.createdAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM");
+    if (obj.modifiedAt)
+      obj.modifiedAt = obj.modifiedAt.toDate().toString("dd/mm/yyyy 00:00:00.000 AM");
     obj.id = docRef.id;
     return obj;
   }
-  return "doc not found ...";
+  return null;
 };
 export const query = path => {
   // extract the collectionName and queryString from given path
@@ -118,7 +116,7 @@ export const add = (path, obj) => {
   // add the createdAt field
   obj.createdAt = firebase.firestore.FieldValue.serverTimestamp();
   // add the createdBy field
-  obj.createdBy = getCurrentUser().uid;
+  obj.createdBy = (getCurrentUser())? getCurrentUser().uid : "app_dev";
   // add new doc with auto generated id
   if (!path.includes("/"))
     return db
@@ -137,7 +135,7 @@ export const update = (path, obj) => {
   // add the createdAt field
   obj.modifiedAt = firebase.firestore.FieldValue.serverTimestamp();
   // add the createdBy field
-  obj.modifiedBy = getCurrentUser().uid;
+  obj.modifiedBy = (getCurrentUser())? getCurrentUser().uid : "app_dev";
   // update an existing doc
   const [collectionName, docId] = path.split("/");
   return db

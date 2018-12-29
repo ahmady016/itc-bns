@@ -6,14 +6,14 @@ import M from 'materialize-css';
 import LS from './localStorage';
 import {
   USER_KEYS,
-  register,
+  add,
+  update,
   login,
+  register,
   signIn,
   signOut,
   updatePassword,
   sendRestPasswordMail,
-  add,
-  update,
   updateEmail,
   updateProfile
 } from './firebase';
@@ -139,10 +139,29 @@ export const updateUser = async ({ prevValues, newValues }) => {
     // if any user value is changed then update user with its uid
     if( Object.keys(newValues).some(key => newValues[key] != prevValues[key] ) )
       await update(`users/${prevValues.uid}`, newValues);
+    toast.info("تم تعديل بيانات المستخدم بنجاح ...");
   } catch(err) {
     toast.error(err.message);
-  } finally {
-    toast.info("تم تعديل بيانات المستخدم بنجاح ...");
+  }
+}
+// do save employee [add or update]
+export const saveEmployee = async ({ type, employee }) => {
+  if(!type || !employee)
+    return;
+  const empId = employee.id;
+  clear(employee,'id');
+  try {
+    switch (type) {
+      case 'add':
+        await add(`employees/${empId}`, employee );
+        break;
+      case 'update':
+        await update(`employees/${empId}`, employee );
+        break;
+    }
+    toast.info("لقد تم حفظ بيانات الموظف بنجاح ...");
+  } catch(err) {
+    toast.error(err.message);
   }
 }
 // initailize a datepicker [one element] with the given options

@@ -433,6 +433,10 @@ async function run() {
   // villages.forEach( (village,i) => add(`villages/${i+1}`,village) );
   // #endregion
 
+  // #region other
+  // add("employees/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", { jobTitle: "اخصائي صيانة حاسب" });
+  // #endregion
+
   // #region add lookup collection docs
   // add("lookup/cities", { value: _cities });
   // add("lookup/accountStatuses", { value: _accountStatuses });

@@ -9,6 +9,7 @@ import RegisterUser from "../public/RegisterUser";
 import Dashboard from "../admin/Dashboard";
 import ChangePassword from "../admin/ChangePassword";
 import ViewEditUser from "../admin/ViewEditUser";
+import EmployeeForm from "../admin/EmployeeForm";
 // import Logout from "../admin/Logout";
 import './admin.css';
 
@@ -23,11 +24,12 @@ class Admin extends Component {
     this.LoginPath = `${url}/login`;
     // the Nav Links [Path - text - component]
     this.routes = [
-      { path: `${url}/register-user`, paramKeys: "/:userType", paramValues: "/employee", text: "تسجيل حساب مستخدم", component: RegisterUser, auth: false },
+      { path: `${url}/register-user`, paramKeys: "/:userType", paramValues: "/employee", text: "تسجيل حساب موظف", component: RegisterUser, auth: false },
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
       // { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
-      { path: `${url}/view-edit-user`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "تعديل بيانات مستخدم", component: ViewEditUser, auth: true },
+      { path: `${url}/employee`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "حفظ موظف", component: EmployeeForm, auth: true },
+      { path: `${url}/view-edit-user`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "تعديل بيانات الموظف", component: ViewEditUser, auth: true },
       { path: `${url}/change-password`, text: "تعديل كلمة المرور", component: ChangePassword, auth: true },
       { path: `${url}/dashboard`, text: "لوحة التحكم", component: Dashboard, auth: true },
     ];
