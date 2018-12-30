@@ -1,5 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
+import TokenAutocomplete from 'react-token-autocomplete'
 import { change, touch } from 'redux-form'
 import store from '../common/reduxStore'
 
@@ -256,6 +257,43 @@ export const renderAutoComplete = ({
       {...settings}
     />
     {showError(meta)}
+  </div>
+);
+// #endregion
+
+// #region react-token-autocomplete [tags input - select dropdown - autocomplete]
+export const renderTagsInput = ({
+  meta,
+  input,
+  label,
+  placeholder,
+  options = [],
+  defaultValues = [],
+  limitToOptions = false,
+  icon = "input",
+  className = "validate",
+  required = false,
+  hidden = false,
+  disabled = false
+}) => (
+  <div className="input-field" hidden={hidden}>
+    <i className="material-icons prefix">{icon}</i>
+    <div className={className}>
+      <label className={input.value ? "active" : ""} htmlFor={input.name}>
+        {label}
+        {(required)? <i className="material-icons required">grade</i> : null}
+      </label>
+      <TokenAutocomplete id={input.name}
+        placeholder={placeholder}
+        limitToOptions={limitToOptions}
+        defaultValues={defaultValues}
+        options={options}
+        disabled={disabled}
+        {...input}
+      />
+      {/* <label htmlFor={input.name}>{label || input.name}</label> */}
+      {showError(meta)}
+    </div>
   </div>
 );
 // #endregion

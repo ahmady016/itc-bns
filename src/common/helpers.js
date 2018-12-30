@@ -144,6 +144,26 @@ export const updateUser = async ({ prevValues, newValues }) => {
     toast.error(err.message);
   }
 }
+// do save a doc [add or update]
+export const saveDoc = async ({ type, path, doc, message }) => {
+  if(!type || !doc)
+    return;
+  const docId = doc.id || '';
+  clear(doc,'id');
+  try {
+    switch (type) {
+      case 'add':
+        await add(`${path}/${docId}`, doc );
+        break;
+      case 'update':
+        await update(`${path}/${docId}`, doc );
+        break;
+    }
+    toast.info(message);
+  } catch(err) {
+    toast.error(err.message);
+  }
+}
 // do save employee [add or update]
 export const saveEmployee = async ({ type, employee }) => {
   if(!type || !employee)

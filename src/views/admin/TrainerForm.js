@@ -7,15 +7,15 @@ import isLength from 'validator/lib/isLength'
 // redux db [firebase] actions
 import { dbActions } from '../../redux/db'
 // reusable Form Inputs
-import { renderInput, renderDatepicker, Button } from '../../common/FormInputs';
+import { renderInput, renderDatepicker, renderTagsInput, Button } from '../../common/FormInputs';
 // from custom helpers
-import { initDatePicker, saveEmployee } from '../../common/helpers';
+import { initDatePicker, saveDoc } from '../../common/helpers';
 
 // the reduxForm name
-const formName = 'employee';
+const formName = 'trainer';
 
 // #region basic react Form
-class EmployeeForm extends Component {
+class TrainerForm extends Component {
   // hold the select options
   state = {
     editMode: false
@@ -31,13 +31,13 @@ class EmployeeForm extends Component {
     const currentYear = (new Date()).getFullYear();
     initDatePicker({
       format: 'dd/mm/yyyy',
-      yearRange: [currentYear-30,currentYear],
-      onSelect: (selectedDate) => dispatch(change(formName, 'joinDate', selectedDate.toLocaleDateString('en-gb') ))
+      yearRange: [currentYear-50,currentYear],
+      onSelect: (selectedDate) => dispatch(change(formName, 'jobHireDate', selectedDate.toLocaleDateString('en-gb') ))
     });
     // get db state
     dbActions.mountListeners([
       { key: "user", path: `users/${params.id}` },
-      { key: "employee", path: `employees/${params.id}` }
+      { key: "trainer", path: `trainers/${params.id}` }
     ]);
   }
   // to reInitialize the materializecss select component after the state changes
@@ -57,22 +57,22 @@ class EmployeeForm extends Component {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
   save = (values) => {
-    const { employee, match: { params } } = this.props;
-    values.id = params.id;
-    (!employee)
-      ? saveEmployee({ type: 'add', employee: values})
-      : saveEmployee({ type: 'update', employee: values});
+    const { trainer, match: { params } } = this.props;
+    values.id = values.id || params.id;
+    (!trainer)
+      ? saveDoc({ path: 'trainer', type: 'add',     doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." })
+      : saveDoc({ path: 'trainer', type: 'update',  doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." });
   }
   // react render
   render() {
-    const { handleSubmit, pristine, submitting, employee } = this.props;
+    const { handleSubmit, pristine, submitting, trainer } = this.props;
     const { editMode } = this.state;
     return (
       <form className="rtl" onSubmit={handleSubmit(this.save)}>
         {/* form title */}
         <h4 className="orange-text">
-          { (!employee)
-            ? 'حفظ بيانات موظف'
+          { (!trainer)
+            ? 'حفظ بيانات مدرب'
             : <>
                 <Button classes="btn-floating primary darken-3"
                   name="viewEdit"
@@ -82,30 +82,42 @@ class EmployeeForm extends Component {
                   label={(editMode) ? 'تعديل' : 'عرض'}
                   onClick={this.toggleViewEdit}
                 />
-                {(editMode)? 'تعديل' : 'عرض'} بيانات موظف
+                {(editMode)? 'تعديل' : 'عرض'} بيانات مدرب
               </>
           }
         </h4>
         <div className="divider orange" />
-        {/* jobTitle */}
-        <Field name="jobTitle"
-                label="الوظيفة"
+        {/* currentJob */}
+        <Field name="currentJob"
+                label="الوظيفة الحالية"
                 required={true}
-                disabled={!editMode && employee}
+                disabled={!editMode && trainer}
                 component={renderInput} />
-        {/* joinDate */}
-        <Field name="joinDate"
-                type="datepicker"
-                label="اختر تاريخ الالتحاق"
+        {/* currentEmployer */}
+        <Field name="currentEmployer"
+                label="جهة العمل"
                 required={true}
-                disabled={!editMode && employee}
+                disabled={!editMode && trainer}
+                component={renderInput} />
+        {/* jobHireDate */}
+        <Field name="jobHireDate"
+                type="datepicker"
+                label="اختر تاريخ التعيين"
+                required={true}
+                disabled={!editMode && trainer}
                 component={renderDatepicker} />
+        {/* offeredCourses */}
+        <Field name="offeredCourses"
+                label="الكورسات التي يدربها"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderTagsInput} />
         {/* Action Button */}
         <Button classes="btn primary darken-3"
                   name="saveEmployee"
                   icon="send"
                   label="حفظ"
-                  hidden={!editMode && employee}
+                  hidden={!editMode && trainer}
                   disabled={pristine || submitting}
         />
       </form>
@@ -124,9 +136,9 @@ const validateJobTitle = (jobTitle, errors) => {
     errors.jobTitle = "يجب الا تقل الوظيفة عن 4 احرف والا تزيد عن 80 حرف ...";
 }
 
-const validateJoinDate = (joinDate, errors) => {
-  if (!joinDate)
-    errors.joinDate = "يجب اختيار تاريخ الالتحاق ...";
+const validateJoinDate = (jobHireDate, errors) => {
+  if (!jobHireDate)
+    errors.jobHireDate = "يجب اختيار تاريخ التعيين ...";
 }
 const validate = ({ joinDate, jobTitle }) => {
   const errors = {};
@@ -137,11 +149,11 @@ const validate = ({ joinDate, jobTitle }) => {
 // #endregion
 
 // compose reactForm with reduxForm [define the reduxForm]
-const EmployeeReduxForm = reduxForm({
+const TrainerReduxForm = reduxForm({
   form: formName,
   enableReinitialize: true,
   validate
-})(EmployeeForm);
+})(TrainerForm);
 
 // get the db values from redux state
 const mapStateToProps = (state) => ({
@@ -150,4 +162,4 @@ const mapStateToProps = (state) => ({
 });
 
 // exporting the composed Form with the redux state
-export default connect(mapStateToProps)(EmployeeReduxForm);
+export default connect(mapStateToProps)(TrainerReduxForm);
