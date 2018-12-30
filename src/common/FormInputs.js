@@ -1,6 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
-import TokenAutocomplete from 'react-token-autocomplete'
+import { WithContext as ReactTags } from 'react-tag-input'
 import { change, touch } from 'redux-form'
 import store from '../common/reduxStore'
 
@@ -261,7 +261,7 @@ export const renderAutoComplete = ({
 );
 // #endregion
 
-// #region react-token-autocomplete [tags input - select dropdown - autocomplete]
+// #region react-tags [tags input - autocomplete]
 export const renderTagsInput = ({
   meta,
   input,
@@ -269,7 +269,6 @@ export const renderTagsInput = ({
   placeholder,
   options = [],
   defaultValues = [],
-  limitToOptions = false,
   icon = "input",
   className = "validate",
   required = false,
@@ -283,11 +282,10 @@ export const renderTagsInput = ({
         {label}
         {(required)? <i className="material-icons required">grade</i> : null}
       </label>
-      <TokenAutocomplete id={input.name}
-        placeholder={placeholder}
-        limitToOptions={limitToOptions}
-        defaultValues={defaultValues}
-        options={options}
+      <ReactTags id={input.name}
+        placeholder={placeholder || label}
+        tags={defaultValues}
+        suggestions={options}
         disabled={disabled}
         {...input}
       />

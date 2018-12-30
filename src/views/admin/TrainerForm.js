@@ -109,6 +109,7 @@ class TrainerForm extends Component {
         {/* offeredCourses */}
         <Field name="offeredCourses"
                 label="الكورسات التي يدربها"
+                placeholder="اضف كورس ..."
                 required={true}
                 disabled={!editMode && trainer}
                 component={renderTagsInput} />
