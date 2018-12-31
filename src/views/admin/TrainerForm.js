@@ -106,6 +106,37 @@ class TrainerForm extends Component {
                 required={true}
                 disabled={!editMode && trainer}
                 component={renderDatepicker} />
+        {/* courseTitle */}
+        <Field name="courseTitle"
+                label="الكورس"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderInput} />
+        {/* obtainedDate */}
+        <Field name="obtainedDate"
+                type="datepicker"
+                label="اختر تاريخ الحصول عليه"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderDatepicker} />
+        {/* courseOrganizer */}
+        <Field name="courseOrganizer"
+                label="الجهة المنظمة"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderInput} />
+        {/* courseGrade */}
+        <Field name="courseGrade"
+                label="التقدير"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderInput} />
+        {/* certificateURL */}
+        <Field name="certificateURL"
+                label="رابط صورة الشهادة"
+                required={true}
+                disabled={!editMode && trainer}
+                component={renderInput} />
         {/* offeredCourses */}
         <Field name="offeredCourses"
                 formName={formName}

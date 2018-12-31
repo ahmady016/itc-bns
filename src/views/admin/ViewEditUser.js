@@ -20,8 +20,7 @@ import {
   initDatePicker,
   initSelect,
   updateUser,
-  resetLSUser,
-  getLoggedUser
+  resetLSUser
 } from '../../common/helpers';
 import { getCurrentUser, onAuthChanged } from "../../common/firebase";
 
@@ -238,7 +237,7 @@ const validateMaritalStatus = (maritalStatus, errors) => {
     errors.maritalStatus = "يجب اختيار الحالة الاجتماعية ...";
 }
 const validate = (values) => {
-  const { displayName, email, password, confirmPassword, nId, phoneNumber, gender, maritalStatus, birthDate } = values;
+  const { displayName, email, nId, phoneNumber, gender, maritalStatus, birthDate } = values;
   const errors = {};
   validateDisplayName(displayName, errors);
   validateEmail(email, errors);
