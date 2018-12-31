@@ -36,12 +36,6 @@ div.check-options {
 }
 /* #endregion */
 
-/* #region matreialize autocomplete hide img */
-ul.autocomplete-content li img {
-  display: none;
-}
-/* #endregion */
-
 /* #region materialize datepicker styles [months - years] */
 body > ul.dropdown-content.select-dropdown {
   right: 60% !important;
@@ -74,9 +68,12 @@ input.datepicker ~ label {
 .autocompelete-select > div:first-child {
   height: 38px;
 }
+ul.autocomplete-content li img {
+  display: none;
+}
 /* #endregion */
 
-/* #region autocompelete-select [react-select] */
+/* #region table styles */
 .rtl td {
   text-align: right;
 }
@@ -88,6 +85,27 @@ input.datepicker ~ label {
 }
 .btn-floating i {
   margin-top: 0.1rem;
+}
+/* #endregion */
+
+/* #region react-tag-input styles */
+div.ReactTags__selected {
+  direction: ltr;
+  margin-top: 1rem;
+}
+span.tag-wrapper.ReactTags__tag {
+  background-color: #aaa;
+  margin-left: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  padding-left: 0.75rem;
+  border-radius: 10rem;
+}
+a.ReactTags__remove {
+  cursor: pointer;
+  margin-left: 0.4rem;
+}
+div.ReactTags__tagInput {
+  direction: rtl;
 }
 /* #endregion */
 

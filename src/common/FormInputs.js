@@ -1,7 +1,7 @@
 import React from 'react'
+import { change, touch } from 'redux-form'
 import Select from 'react-select'
 import { WithContext as ReactTags } from 'react-tag-input'
-import { change, touch } from 'redux-form'
 import store from '../common/reduxStore'
 
 // #region show validations messages
@@ -261,14 +261,14 @@ export const renderAutoComplete = ({
 );
 // #endregion
 
-// #region react-tags [tags input - autocomplete]
+// #region react-tag-input [tags input - autocomplete]
 export const renderTagsInput = ({
   meta,
   input,
   label,
   placeholder,
+  formName,
   options = [],
-  defaultValues = [],
   icon = "input",
   className = "validate",
   required = false,
@@ -282,14 +282,19 @@ export const renderTagsInput = ({
         {label}
         {(required)? <i className="material-icons required">grade</i> : null}
       </label>
-      <ReactTags id={input.name}
+      <ReactTags
+        id={input.name}
         placeholder={placeholder || label}
-        tags={defaultValues}
+        tags={input.value || []}
         suggestions={options}
+        handleAddition={tag => store.dispatch( change(formName, input.name, [...input.value, tag]) ) }
+        handleDelete={i =>  store.dispatch( change(formName, input.name, input.value.filter( (tag, index) => index !== i) ) ) }
+        handleInputBlur={ () => store.dispatch(touch(formName, input.name)) }
+        handleInputFocus={input.onFocus}
+        allowDragDrop={false}
+        inline={true}
         disabled={disabled}
-        {...input}
       />
-      {/* <label htmlFor={input.name}>{label || input.name}</label> */}
       {showError(meta)}
     </div>
   </div>

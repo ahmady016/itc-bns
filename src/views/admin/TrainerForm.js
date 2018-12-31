@@ -108,7 +108,8 @@ class TrainerForm extends Component {
                 component={renderDatepicker} />
         {/* offeredCourses */}
         <Field name="offeredCourses"
-                label="الكورسات التي يدربها"
+                formName={formName}
+                label="الكورسات التي تقوم بتدريبها"
                 placeholder="اضف كورس ..."
                 required={true}
                 disabled={!editMode && trainer}
@@ -128,23 +129,32 @@ class TrainerForm extends Component {
 // #endregion
 
 // #region the Form validations
-const validateJobTitle = (jobTitle, errors) => {
-  if (!jobTitle)
-    errors.jobTitle = "يجب ادخال الوظيفة ...";
-  else if ( !jobTitle.alpha('ar') )
-    errors.jobTitle = "يجب ان تحتوي الوظيفة علي حروف عربية فقط";
-  else if ( !isLength(jobTitle, { min: 4, max: 80 }) )
-    errors.jobTitle = "يجب الا تقل الوظيفة عن 4 احرف والا تزيد عن 80 حرف ...";
+const validateCurrentJob = (currentJob, errors) => {
+  if (!currentJob)
+    errors.currentJob = "يجب ادخال الوظيفة ...";
+  else if ( !isLength(currentJob, { min: 4, max: 80 }) )
+    errors.currentJob = "يجب الا تقل الوظيفة عن 4 احرف والا تزيد عن 80 حرف ...";
 }
-
-const validateJoinDate = (jobHireDate, errors) => {
+const validateCurrentEmployer = (currentEmployer, errors) => {
+  if (!currentEmployer)
+    errors.currentEmployer = "يجب ادخال جهة العمل ...";
+  else if ( !isLength(currentEmployer, { min: 4, max: 80 }) )
+    errors.currentEmployer = "يجب الا تقل جهة العمل عن 4 احرف والا تزيد عن 80 حرف ...";
+}
+const validateJobHireDate = (jobHireDate, errors) => {
   if (!jobHireDate)
     errors.jobHireDate = "يجب اختيار تاريخ التعيين ...";
 }
-const validate = ({ joinDate, jobTitle }) => {
+const validateOfferedCourses = (offeredCourses, errors) => {
+  if (!offeredCourses || offeredCourses.length === 0)
+    errors.offeredCourses = "يجب إضافة كورس أو أكثر ...";
+}
+const validate = ({ currentJob, currentEmployer, jobHireDate, offeredCourses }) => {
   const errors = {};
-  validateJobTitle(jobTitle, errors);
-  validateJoinDate(joinDate, errors);
+  validateCurrentJob(currentJob, errors);
+  validateCurrentEmployer(currentEmployer,errors);
+  validateJobHireDate(jobHireDate, errors);
+  validateOfferedCourses(offeredCourses, errors);
   return errors;
 }
 // #endregion
