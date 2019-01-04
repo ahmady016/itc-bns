@@ -185,8 +185,8 @@ export const saveEmployee = async ({ type, employee }) => {
   }
 }
 // initailize a datepicker [one element] with the given options
-export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => {
-  const picker = document.querySelector(".datepicker");
+export const initDatePicker = ({ pSelector, format, yearRange, defaultDate, onSelect }) => {
+  const picker = document.querySelector(pSelector+' .datepicker');
   const options = {
     setDefaultDate: true,
     defaultDate,

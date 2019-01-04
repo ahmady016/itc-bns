@@ -1,18 +1,103 @@
 // react and redux Form
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Field, reduxForm, change } from 'redux-form'
+import { reduxForm, change, Field, FieldArray } from 'redux-form'
 // validators helpers
 import isLength from 'validator/lib/isLength'
 // redux db [firebase] actions
 import { dbActions } from '../../redux/db'
 // reusable Form Inputs
-import { renderInput, renderDatepicker, renderTagsInput, Button } from '../../common/FormInputs';
+import {
+  renderInput,
+  renderDatepicker,
+  renderTagsInput,
+  renderError,
+  Button
+} from '../../common/FormInputs';
 // from custom helpers
 import { initDatePicker, saveDoc } from '../../common/helpers';
 
 // the reduxForm name
 const formName = 'trainer';
+
+// #region render ObtainedCourses FieldArray
+const renderObtainedCourses = ({ fields, meta: { error, submitFailed }, label, editMode, trainer, dispatch }) => (
+  <fieldset>
+    <legend>{label}</legend>
+    <ul>
+      {fields.map( (course, i) => (
+        <li key={i}>
+          <h6>
+            كورس #{i+1}
+            <Button type="button"
+              classes="btn-floating primary darken-3"
+              name="removeCourseField"
+              icon="close"
+              label="حذف"
+              hidden={!editMode && trainer}
+              onClick={() => fields.remove(i)}
+            />
+          </h6>
+          {/* courseTitle */}
+          <Field name={`${course}.courseTitle`}
+                  label="الكورس"
+                  required={true}
+                  disabled={!editMode && trainer}
+                  component={renderInput} />
+          {/* obtainedDate */}
+          <Field name={`${course}.obtainedDate`}
+                  type="datepicker"
+                  label="اختر تاريخ الحصول عليه"
+                  required={true}
+                  disabled={!editMode && trainer}
+                  component={renderDatepicker} />
+          {/* courseOrganizer */}
+          <Field name={`${course}.courseOrganizer`}
+                  label="الجهة المنظمة"
+                  required={true}
+                  disabled={!editMode && trainer}
+                  component={renderInput} />
+          {/* courseGrade */}
+          <Field name={`${course}.courseGrade`}
+                  label="التقدير"
+                  required={true}
+                  disabled={!editMode && trainer}
+                  component={renderInput} />
+          {/* certificateURL */}
+          <Field name={`${course}.certificateURL`}
+                  label="رابط صورة الشهادة"
+                  required={true}
+                  disabled={!editMode && trainer}
+                  component={renderInput} />
+        </li>
+      ))}
+    <li>
+      <Button type="button"
+        classes="btn primary darken-3"
+        name="addCourseField"
+        icon="playlist_add"
+        label="اضف كورس"
+        hidden={!editMode && trainer}
+        onClick={ () => {
+          fields.push({});
+          // init Materialize datePicker after pushing and registering the fields
+          setTimeout(() => {
+            const currentYear = (new Date()).getFullYear();
+            initDatePicker({
+              pSelector: 'fieldset',
+              format: 'dd/mm/yyyy',
+              yearRange: [currentYear - 50, currentYear],
+              onSelect: (selectedDate) => dispatch(change(formName, `obtainedCourses[${fields.length-1}].obtainedDate`, selectedDate.toLocaleDateString('en-gb')))
+            });
+          }, 100);
+        } }
+      />
+      { submitFailed && error && renderError(error) }
+    </li>
+    </ul>
+  </fieldset>
+);
+// #endregion
 
 // #region basic react Form
 class TrainerForm extends Component {
@@ -30,6 +115,7 @@ class TrainerForm extends Component {
     // init Materialize datePicker
     const currentYear = (new Date()).getFullYear();
     initDatePicker({
+      pSelector: 'form',
       format: 'dd/mm/yyyy',
       yearRange: [currentYear-50,currentYear],
       onSelect: (selectedDate) => dispatch(change(formName, 'jobHireDate', selectedDate.toLocaleDateString('en-gb') ))
@@ -65,7 +151,7 @@ class TrainerForm extends Component {
   }
   // react render
   render() {
-    const { handleSubmit, pristine, submitting, trainer } = this.props;
+    const { handleSubmit, pristine, submitting, trainer, dispatch } = this.props;
     const { editMode } = this.state;
     return (
       <form className="rtl" onSubmit={handleSubmit(this.save)}>
@@ -106,37 +192,13 @@ class TrainerForm extends Component {
                 required={true}
                 disabled={!editMode && trainer}
                 component={renderDatepicker} />
-        {/* courseTitle */}
-        <Field name="courseTitle"
-                label="الكورس"
-                required={true}
-                disabled={!editMode && trainer}
-                component={renderInput} />
-        {/* obtainedDate */}
-        <Field name="obtainedDate"
-                type="datepicker"
-                label="اختر تاريخ الحصول عليه"
-                required={true}
-                disabled={!editMode && trainer}
-                component={renderDatepicker} />
-        {/* courseOrganizer */}
-        <Field name="courseOrganizer"
-                label="الجهة المنظمة"
-                required={true}
-                disabled={!editMode && trainer}
-                component={renderInput} />
-        {/* courseGrade */}
-        <Field name="courseGrade"
-                label="التقدير"
-                required={true}
-                disabled={!editMode && trainer}
-                component={renderInput} />
-        {/* certificateURL */}
-        <Field name="certificateURL"
-                label="رابط صورة الشهادة"
-                required={true}
-                disabled={!editMode && trainer}
-                component={renderInput} />
+        {/* obtainedCourses */}
+        <FieldArray name="obtainedCourses"
+                label="الكورسات الحاصل عليها"
+                editMode={editMode}
+                trainer={trainer}
+                dispatch={dispatch}
+                component={renderObtainedCourses} />
         {/* offeredCourses */}
         <Field name="offeredCourses"
                 formName={formName}
@@ -177,14 +239,38 @@ const validateJobHireDate = (jobHireDate, errors) => {
     errors.jobHireDate = "يجب اختيار تاريخ التعيين ...";
 }
 const validateOfferedCourses = (offeredCourses, errors) => {
-  if (!offeredCourses || offeredCourses.length === 0)
+  if (!offeredCourses || !offeredCourses.length)
     errors.offeredCourses = "يجب إضافة كورس أو أكثر ...";
 }
-const validate = ({ currentJob, currentEmployer, jobHireDate, offeredCourses }) => {
+const validateObtainedCourse = (course) => {
+  const courseErrors = {};
+  if (!course || !course.courseTitle)
+    courseErrors.courseTitle = "يجب إدخال اسم الكورس ...";
+  if (!course || !course.obtainedDate)
+    courseErrors.obtainedDate = "يجب اختيار تاريخ  الحصول علي الكورس ...";
+  if (!course || !course.courseOrganizer)
+    courseErrors.courseOrganizer = "يجب إدخال الجهة المنفذة للكورس ...";
+  if (!course || !course.courseGrade)
+    courseErrors.courseGrade = "يجب إدخال التقدير العام للكورس ...";
+  if (!course || !course.certificateURL)
+    courseErrors.certificateURL = "يجب إدخال رابط صورة شهادة الكورس ...";
+  return courseErrors;
+}
+const validateObtainedCourses = (obtainedCourses, errors) => {
+  if(!obtainedCourses || !obtainedCourses.length)
+    errors.obtainedCourses = { _error: "يجب إضافة كورس أو أكثر ..." };
+  else {
+    const obtainedCoursesErrors = obtainedCourses.map(validateObtainedCourse);
+    if(obtainedCoursesErrors.length)
+      errors.obtainedCourses = obtainedCoursesErrors;
+  }
+}
+const validate = ({ currentJob, currentEmployer, jobHireDate, obtainedCourses, offeredCourses }) => {
   const errors = {};
   validateCurrentJob(currentJob, errors);
   validateCurrentEmployer(currentEmployer,errors);
   validateJobHireDate(jobHireDate, errors);
+  validateObtainedCourses(obtainedCourses, errors);
   validateOfferedCourses(offeredCourses, errors);
   return errors;
 }

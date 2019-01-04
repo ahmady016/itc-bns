@@ -5,7 +5,13 @@ import { WithContext as ReactTags } from 'react-tag-input'
 import store from '../common/reduxStore'
 
 // #region show validations messages
-const showError = ( { error, touched } ) => (
+export const renderError = (error) => (
+  <div className="red-text text-darken-4 valign-wrapper validate error">
+      <i className="material-icons">error_outline</i>
+      <span>{error}</span>
+    </div>
+);
+export const showError = ( { error, touched } ) => (
   (touched && error)
   ? <div className="red-text text-darken-4 valign-wrapper validate error">
       <i className="material-icons">error_outline</i>
@@ -268,6 +274,7 @@ export const renderTagsInput = ({
   label,
   placeholder,
   formName,
+  autofocus = false,
   options = [],
   icon = "input",
   className = "validate",
@@ -293,6 +300,7 @@ export const renderTagsInput = ({
         handleInputFocus={input.onFocus}
         allowDragDrop={false}
         inline={true}
+        autofocus={autofocus}
         disabled={disabled}
       />
       {showError(meta)}
