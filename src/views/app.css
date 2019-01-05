@@ -2,6 +2,17 @@
 .hidden {
   display: none !important;
 }
+.flex {
+  display: flex;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pointer {
+  cursor: pointer;
+}
 /* #endregion */
 
 /* #region form error messages  */

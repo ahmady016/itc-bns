@@ -184,9 +184,17 @@ export const saveEmployee = async ({ type, employee }) => {
     toast.error(err.message);
   }
 }
-// initailize a datepicker [one element] with the given options
-export const initDatePicker = ({ pSelector, format, yearRange, defaultDate, onSelect }) => {
-  const picker = document.querySelector(pSelector+' .datepicker');
+// initialize tabs element
+export const initTabs = () => {
+  M.Tabs.init(document.querySelectorAll('.tabs'), {});
+}
+// initialize a datepicker [one element] with the given options
+export const initDatePicker = ({ pSelector = '', id= '', format, yearRange, defaultDate, onSelect }) => {
+  const picker = (id)
+    ? document.getElementById(id)
+    : (pSelector)
+      ? document.querySelector(pSelector + ' .datepicker')
+      : document.querySelector('.datepicker');
   const options = {
     setDefaultDate: true,
     defaultDate,
@@ -196,7 +204,7 @@ export const initDatePicker = ({ pSelector, format, yearRange, defaultDate, onSe
   }
   M.Datepicker.init(picker, options);
 }
-// initailize AutoComplete [elements] with the given options
+// initialize AutoComplete [elements] with the given options
 // options is an Object where each key represents elementId
 // and the value hold the element Autocomplete options
 export const initAutoComplete = (options) => {
@@ -205,12 +213,12 @@ export const initAutoComplete = (options) => {
     M.Autocomplete.init(autoCompleteLists, options[elem.id]);
   });
 }
-// initailize a sideNav [elements] with empty options
+// initialize a sideNav [elements] with empty options
 export const initSidenav = () => {
   const elems = document.querySelectorAll('.sidenav');
   M.Sidenav.init(elems, {});
 }
-// initailize a Select [elements] with empty options
+// initialize a Select [elements] with empty options
 export const initSelect = () => {
   const selectLists = document.querySelectorAll('select');
   M.FormSelect.init(selectLists, {});
@@ -223,7 +231,7 @@ export const initSelect = () => {
 }
 // hold tooltips Instances
 let tooltipsIns = [];
-// initailize a Tooltip [elements] with fixed options
+// initialize a Tooltip [elements] with fixed options
 // and store all Tooltips Instances in [tooltipsIns]
 export const initTooltips = () => {
   const elems = document.querySelectorAll('.tooltipped');

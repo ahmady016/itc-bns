@@ -16,84 +16,89 @@ import {
 } from '../../common/FormInputs';
 // from custom helpers
 import { initDatePicker, saveDoc } from '../../common/helpers';
+// for generate unique ids
+import shortid from 'shortid'
 
 // the reduxForm name
 const formName = 'trainer';
+// the currentFullYear
+const currentYear = (new Date()).getFullYear();
+// init each course datepicker
+const initCourseDatepicker = (fieldId, dispatch) => {
+  initDatePicker({
+    id: fieldId,
+    format: 'dd/mm/yyyy',
+    yearRange: [currentYear - 50, currentYear],
+    onSelect: (selectedDate) => dispatch(change(formName, fieldId, selectedDate.toLocaleDateString('en-gb')))
+  });
+}
+
+// #region render each Course Fields
+const renderCourse = (editMode, trainer) => (course, i, fields) => (
+  <li key={i}>
+    <h6>
+      كورس {i + 1}
+      <i className="material-icons left pointer" onClick={() => fields.remove(i)}>close</i>
+    </h6>
+    {/* courseTitle */}
+    <Field name={`${course}.courseTitle`}
+      label="الكورس"
+      required={true}
+      disabled={!editMode && trainer}
+      component={renderInput} />
+    {/* obtainedDate */}
+    <Field name={`${course}.obtainedDate`}
+      type="datepicker"
+      label="اختر تاريخ الحصول عليه"
+      required={true}
+      disabled={!editMode && trainer}
+      component={renderDatepicker} />
+    {/* courseOrganizer */}
+    <Field name={`${course}.courseOrganizer`}
+      label="الجهة المنظمة"
+      required={true}
+      disabled={!editMode && trainer}
+      component={renderInput} />
+    {/* courseGrade */}
+    <Field name={`${course}.courseGrade`}
+      label="التقدير"
+      required={true}
+      disabled={!editMode && trainer}
+      component={renderInput} />
+    {/* certificateURL */}
+    <Field name={`${course}.certificateURL`}
+      label="رابط صورة الشهادة"
+      required={true}
+      disabled={!editMode && trainer}
+      component={renderInput} />
+  </li>
+);
+// #endregion
 
 // #region render ObtainedCourses FieldArray
-const renderObtainedCourses = ({ fields, meta: { error, submitFailed }, label, editMode, trainer, dispatch }) => (
+const renderObtainedCourses = ({ fields, meta: { error, submitFailed }, label, required, editMode, trainer, dispatch }) => (
   <fieldset>
-    <legend>{label}</legend>
+    <legend>
+      {label}
+      {(required)? <i className="material-icons required">grade</i> : null}
+    </legend>
     <ul>
-      {fields.map( (course, i) => (
-        <li key={i}>
-          <h6>
-            كورس #{i+1}
-            <Button type="button"
-              classes="btn-floating primary darken-3"
-              name="removeCourseField"
-              icon="close"
-              label="حذف"
-              hidden={!editMode && trainer}
-              onClick={() => fields.remove(i)}
-            />
-          </h6>
-          {/* courseTitle */}
-          <Field name={`${course}.courseTitle`}
-                  label="الكورس"
-                  required={true}
-                  disabled={!editMode && trainer}
-                  component={renderInput} />
-          {/* obtainedDate */}
-          <Field name={`${course}.obtainedDate`}
-                  type="datepicker"
-                  label="اختر تاريخ الحصول عليه"
-                  required={true}
-                  disabled={!editMode && trainer}
-                  component={renderDatepicker} />
-          {/* courseOrganizer */}
-          <Field name={`${course}.courseOrganizer`}
-                  label="الجهة المنظمة"
-                  required={true}
-                  disabled={!editMode && trainer}
-                  component={renderInput} />
-          {/* courseGrade */}
-          <Field name={`${course}.courseGrade`}
-                  label="التقدير"
-                  required={true}
-                  disabled={!editMode && trainer}
-                  component={renderInput} />
-          {/* certificateURL */}
-          <Field name={`${course}.certificateURL`}
-                  label="رابط صورة الشهادة"
-                  required={true}
-                  disabled={!editMode && trainer}
-                  component={renderInput} />
-        </li>
-      ))}
-    <li>
-      <Button type="button"
-        classes="btn primary darken-3"
-        name="addCourseField"
-        icon="playlist_add"
-        label="اضف كورس"
-        hidden={!editMode && trainer}
-        onClick={ () => {
-          fields.push({});
-          // init Materialize datePicker after pushing and registering the fields
-          setTimeout(() => {
-            const currentYear = (new Date()).getFullYear();
-            initDatePicker({
-              pSelector: 'fieldset',
-              format: 'dd/mm/yyyy',
-              yearRange: [currentYear - 50, currentYear],
-              onSelect: (selectedDate) => dispatch(change(formName, `obtainedCourses[${fields.length-1}].obtainedDate`, selectedDate.toLocaleDateString('en-gb')))
-            });
-          }, 100);
-        } }
-      />
-      { submitFailed && error && renderError(error) }
-    </li>
+      { fields.map(renderCourse(editMode, trainer)) }
+      <li>
+        <Button type="button"
+          classes="btn primary darken-3"
+          name="addCourseField"
+          icon="playlist_add"
+          label="اضف كورس"
+          hidden={!editMode && trainer}
+          onClick={ () => {
+            fields.push({});
+            // init Materialize datePicker after pushing and registering the fields
+            setTimeout(() => initCourseDatepicker(`obtainedCourses[${fields.length}].obtainedDate`, dispatch), 100);
+          } }
+        />
+        { submitFailed && error && renderError(error) }
+      </li>
     </ul>
   </fieldset>
 );
@@ -195,6 +200,7 @@ class TrainerForm extends Component {
         {/* obtainedCourses */}
         <FieldArray name="obtainedCourses"
                 label="الكورسات الحاصل عليها"
+                required={true}
                 editMode={editMode}
                 trainer={trainer}
                 dispatch={dispatch}
