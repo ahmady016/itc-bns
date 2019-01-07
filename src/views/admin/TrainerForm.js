@@ -35,72 +35,74 @@ const initCourseDatepicker = (fieldId, dispatch) => {
 
 // #region render each Course Fields
 const renderCourse = (editMode, trainer) => (course, i, fields) => (
-  <li key={i}>
-    <h6>
+  <li key={i} className="collection-item">
+    <h6 className="card-header grey darken-4">
       كورس {i + 1}
       <i className="material-icons left pointer" onClick={() => fields.remove(i)}>close</i>
     </h6>
-    {/* courseTitle */}
-    <Field name={`${course}.courseTitle`}
-      label="الكورس"
-      required={true}
-      disabled={!editMode && trainer}
-      component={renderInput} />
-    {/* obtainedDate */}
-    <Field name={`${course}.obtainedDate`}
-      type="datepicker"
-      label="اختر تاريخ الحصول عليه"
-      required={true}
-      disabled={!editMode && trainer}
-      component={renderDatepicker} />
-    {/* courseOrganizer */}
-    <Field name={`${course}.courseOrganizer`}
-      label="الجهة المنظمة"
-      required={true}
-      disabled={!editMode && trainer}
-      component={renderInput} />
-    {/* courseGrade */}
-    <Field name={`${course}.courseGrade`}
-      label="التقدير"
-      required={true}
-      disabled={!editMode && trainer}
-      component={renderInput} />
-    {/* certificateURL */}
-    <Field name={`${course}.certificateURL`}
-      label="رابط صورة الشهادة"
-      required={true}
-      disabled={!editMode && trainer}
-      component={renderInput} />
+    <div className="card-panel">
+      {/* courseTitle */}
+      <Field name={`${course}.courseTitle`}
+        label="الكورس"
+        required={true}
+        disabled={!editMode && trainer}
+        component={renderInput} />
+      {/* obtainedDate */}
+      <Field name={`${course}.obtainedDate`}
+        type="datepicker"
+        label="اختر تاريخ الحصول عليه"
+        required={true}
+        disabled={!editMode && trainer}
+        component={renderDatepicker} />
+      {/* courseOrganizer */}
+      <Field name={`${course}.courseOrganizer`}
+        label="الجهة المنظمة"
+        required={true}
+        disabled={!editMode && trainer}
+        component={renderInput} />
+      {/* courseGrade */}
+      <Field name={`${course}.courseGrade`}
+        label="التقدير"
+        required={true}
+        disabled={!editMode && trainer}
+        component={renderInput} />
+      {/* certificateURL */}
+      <Field name={`${course}.certificateURL`}
+        label="رابط صورة الشهادة"
+        required={true}
+        disabled={!editMode && trainer}
+        component={renderInput} />
+    </div>
   </li>
 );
 // #endregion
 
 // #region render ObtainedCourses FieldArray
 const renderObtainedCourses = ({ fields, meta: { error, submitFailed }, label, required, editMode, trainer, dispatch }) => (
-  <fieldset>
-    <legend>
-      {label}
-      {(required)? <i className="material-icons required">grade</i> : null}
-    </legend>
-    <ul>
-      { fields.map(renderCourse(editMode, trainer)) }
-      <li>
-        <Button type="button"
-          classes="btn primary darken-3"
-          name="addCourseField"
-          icon="playlist_add"
-          label="اضف كورس"
-          hidden={!editMode && trainer}
-          onClick={ () => {
-            fields.push({});
-            // init Materialize datePicker after pushing and registering the fields
-            setTimeout(() => initCourseDatepicker(`obtainedCourses[${fields.length}].obtainedDate`, dispatch), 100);
-          } }
-        />
-        { submitFailed && error && renderError(error) }
-      </li>
-    </ul>
-  </fieldset>
+  <ul className="collection with-header">
+    <li className="collection-header">
+      <h6>
+        {label}
+        {(required)? <i className="material-icons required">grade</i> : null}
+      </h6>
+    </li>
+    { fields.map(renderCourse(editMode, trainer)) }
+    <li className="collection-item flex-center">
+      <Button type="button"
+        classes="btn primary darken-3"
+        name="addCourseField"
+        icon="playlist_add"
+        label="اضف كورس"
+        hidden={!editMode && trainer}
+        onClick={ () => {
+          fields.push({});
+          // init Materialize datePicker after pushing and registering the fields
+          setTimeout(() => initCourseDatepicker(`obtainedCourses[${fields.length}].obtainedDate`, dispatch), 100);
+        } }
+      />
+      { submitFailed && error && renderError(error) }
+    </li>
+  </ul>
 );
 // #endregion
 

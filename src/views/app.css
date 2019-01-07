@@ -13,6 +13,9 @@
 .pointer {
   cursor: pointer;
 }
+.card-header {
+  padding: 1.2rem 1rem;
+}
 /* #endregion */
 
 /* #region form error messages  */
