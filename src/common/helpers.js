@@ -149,13 +149,14 @@ export const saveDoc = async ({ type, path, doc, message }) => {
   if(!type || !doc)
     return;
   const docId = doc.id || '';
-  clear(doc,'id');
   try {
     switch (type) {
       case 'add':
+        clear(doc,['id']);
         await add(`${path}/${docId}`, doc );
         break;
       case 'update':
+        clear(doc,['id','createdAt','createdBy','modifiedAt','modifiedBy']);
         await update(`${path}/${docId}`, doc );
         break;
     }

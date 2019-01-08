@@ -38,7 +38,7 @@ const renderCourse = (editMode, trainer) => (course, i, fields) => (
   <li key={i} className="collection-item">
     <h6 className="card-header grey darken-4">
       كورس {i + 1}
-      <i className="material-icons left pointer" onClick={() => fields.remove(i)}>close</i>
+      <i className="material-icons sm red-text left pointer" onClick={() => fields.remove(i)}>delete_forever</i>
     </h6>
     <div className="card-panel">
       {/* courseTitle */}
@@ -153,8 +153,8 @@ class TrainerForm extends Component {
     const { trainer, match: { params } } = this.props;
     values.id = values.id || params.id;
     (!trainer)
-      ? saveDoc({ path: 'trainer', type: 'add',     doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." })
-      : saveDoc({ path: 'trainer', type: 'update',  doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." });
+      ? saveDoc({ path: 'trainers', type: 'add',     doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." })
+      : saveDoc({ path: 'trainers', type: 'update',  doc: values, message: "لقد تم حفظ بيانات المدرب بنجاح ..." });
   }
   // react render
   render() {
@@ -294,7 +294,7 @@ const TrainerReduxForm = reduxForm({
 // get the db values from redux state
 const mapStateToProps = (state) => ({
   ...state.db,
-  "initialValues": { ...state.db.employee }
+  "initialValues": { ...state.db.trainer }
 });
 
 // exporting the composed Form with the redux state
