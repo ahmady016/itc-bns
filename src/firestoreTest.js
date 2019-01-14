@@ -413,7 +413,7 @@ async function run() {
       "فوق المتوسط",
       "عالي"
     ],
-    _studentClasses = [
+    _studentTypes = [
       "طالب",
       "خريج",
       "يعمل"
@@ -444,7 +444,7 @@ async function run() {
   // add("lookup/userTypes", { value: _userTypes });
   // add("lookup/evaluationItems", { value: _evalItems });
   // add("lookup/genders", { value: _genders });
-  // add("lookup/studentClasses", { value: _studentClasses });
+  // add("lookup/studentTypes", { value: _studentTypes });
   // add("lookup/qualificationTypes", { value: _qualificationTypes });
   // add("lookup/locationTypes", { value: _locationTypes });
   // add("lookup/maritalStatuses", { value: _maritalStatuses });

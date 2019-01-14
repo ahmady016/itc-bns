@@ -11,6 +11,7 @@ import ChangePassword from "../admin/ChangePassword";
 import ViewEditUser from "../admin/ViewEditUser";
 import EmployeeForm from "../admin/EmployeeForm";
 import TrainerForm from "../admin/TrainerForm";
+import StudentForm from "../admin/StudentForm";
 // import Logout from "../admin/Logout";
 import './admin.css';
 
@@ -29,6 +30,7 @@ class Admin extends Component {
       { path: `${url}/register`, text: "تسجيل حساب", component: Register, auth: false },
       { path: `${url}/login`, text: "تسجيل دخول", component: Login, auth: false },
       // { path: `${url}/logout`, text: "تسجيل خروج", component: Logout, auth: true },
+      { path: `${url}/trainer`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "حفظ متدرب", component: StudentForm, auth: true },
       { path: `${url}/trainer`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "حفظ مدرب", component: TrainerForm, auth: true },
       { path: `${url}/employee`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "حفظ موظف", component: EmployeeForm, auth: true },
       { path: `${url}/view-edit-user`, paramKeys: "/:id", paramValues: "/KcjQn35H0kUumrfdIWlJ9tBBtuZ2", text: "تعديل بيانات الموظف", component: ViewEditUser, auth: true },
