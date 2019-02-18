@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { logout, isAuth, getLoggedUser, initSidenav } from '../../common/helpers'
+import { logout, isAuth, getLoggedUser, initSideNav } from '../../common/helpers'
 
 // hold the current url
 let currentURL = '';
 // return active or not based on matching path
 const setActiveNav = (url, path) => {
-  path = path.slice(path.lastIndexOf('/')+1);
-  return (url === path) ? 'active' : '';
+  return (url.includes(path)) ? 'active' : '';
 }
 // after logout refresh the whole app
 const doLogout = (history) => async () => {
@@ -19,7 +18,10 @@ const renderNav = (navLinks, id, className) => (
   <ul id={id} className={className}>
     {navLinks.map((link, i) => (
       <li key={i + 1} className={setActiveNav(currentURL, link.path)}>
-        <NavLink to={link.path+(link.paramValues|| '')}>{link.text}</NavLink>
+        <NavLink to={link.path+(link.paramValues|| '')}>
+          <i class="fas fa-hand-point-left right"></i>
+          {link.text}
+        </NavLink>
       </li>
     ))}
   </ul>
@@ -27,7 +29,7 @@ const renderNav = (navLinks, id, className) => (
 // render user-info
 const renderUserInfo = (history) => (
   isAuth()
-  ? <div className="user-info">
+  ? <div className="user-info flex-b-40">
       <i className="fas fa-user-tie"></i>
       <span>
         {getLoggedUser().displayName}
@@ -38,30 +40,29 @@ const renderUserInfo = (history) => (
 )
 export default class NavBar extends Component {
   componentDidMount() {
-    initSidenav();
+    initSideNav({ edge: 'right' });
   }
   render() {
     let { links, className, history } = this.props;
     // get the current URL
     currentURL = window.location.href;
-    // get the last route segment from the current URL
-    currentURL = currentURL.slice(currentURL.lastIndexOf('/')+1);
     // remove the not needed route(s)
     links = links.filter(link => (isAuth() && link.auth) || (!isAuth() && !link.auth) );
     return (
       <>
         <nav className={className}>
-          <div className="nav-wrapper">
-            <img className="right" src="/images/app-logo.png" alt="itc-bns logo" />
-            <Link to="/" className="brand-logo right">مركز تدريب علوم الحاسب</Link>
-            <a className="sidenav-trigger left hide-on-large-only" data-target="mobile-nav">
+          <div className="nav-wrapper flex p-rl-2">
+            <a className="sidenav-trigger flex-b-5" data-target="slide-out">
               <i className="fas fa-bars"></i>
             </a>
-            { renderNav(links, "pc-nav", "left hide-on-med-and-down") }
+            <div className="flex flex-b-30">
+              <img src="/images/app-logo.png" alt="itc-bns logo" />
+              <Link to="/" className="brand-logo">مركز تدريب علوم الحاسب</Link>
+            </div>
             { renderUserInfo(history) }
           </div>
         </nav>
-        { renderNav(links, "mobile-nav", "sidenav") }
+        { renderNav(links, "slide-out", "sidenav") }
       </>
     )
   }

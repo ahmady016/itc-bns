@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, change, Field, FieldArray } from 'redux-form'
-// validators helpers
+// validator helpers
 import isLength from 'validator/lib/isLength'
 // redux db [firebase] actions
 import { dbActions } from '../../redux/db'
@@ -105,7 +105,7 @@ class studentForm extends Component {
       };
     return null;
   }
-  // to reInitialize the materializecss select component after the state changes
+  // to reInitialize the materialize-css select component after the state changes
   componentDidUpdate(prevProps, prevState) {
     if ( prevState.locationTypes.length !== this.state.locationTypes.length &&
          prevState.qualificationTypes.length !== this.state.qualificationTypes.length &&
@@ -114,7 +114,7 @@ class studentForm extends Component {
       // init the select [dropdown]
       initSelect();
   }
-  // to initialize the datepicker and to mount all realtime updates db listeners
+  // to initialize the datepicker and to mount all real-time updates db listeners
   componentDidMount() {
     const { match: { params } } = this.props;
     // init the select [dropdown] inputs
@@ -129,7 +129,7 @@ class studentForm extends Component {
     ]);
   }
   componentWillUnmount() {
-    // to remove all firebase db realtime updates listeners
+    // to remove all firebase db real-time updates listeners
     dbActions.clearListeners();
   }
   toggleViewEdit = () => {

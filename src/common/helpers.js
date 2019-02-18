@@ -215,9 +215,9 @@ export const initAutoComplete = (options) => {
   });
 }
 // initialize a sideNav [elements] with empty options
-export const initSidenav = () => {
+export const initSideNav = ({ edge }) => {
   const elems = document.querySelectorAll('.sidenav');
-  M.Sidenav.init(elems, {});
+  M.Sidenav.init(elems, { edge });
 }
 // initialize a Select [elements] with empty options
 export const initSelect = () => {
